@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import axios from 'axios';
+import { login } from '../../services/api';
 
 export default function Login(){
   const [form,setForm] = useState({email:'',password:''});
@@ -7,7 +7,7 @@ export default function Login(){
   const submit=async(e)=>{
     e.preventDefault();
     try{
-      const res = await axios.post('/api/auth/login', form, { withCredentials: true });
+      const res = await login(form);
       // we don't receive token by default in cookie - store flag
       localStorage.setItem('admin_token','1');
       window.location.href='/admin/dashboard';

@@ -1,3 +1,4 @@
+require('express-async-errors');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -5,11 +6,17 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const path = require('path');
+const helmet = require('helmet');
+
+const errorMiddleware = require('./middleware/errorMiddleware');
+const analyticsMiddleware = require('./middleware/analyticsMiddleware');
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
+app.use(analyticsMiddleware);
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
@@ -30,6 +37,8 @@ app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // Health
 app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));

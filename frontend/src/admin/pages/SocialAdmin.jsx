@@ -1,18 +1,63 @@
-import React, {useEffect,useState} from 'react';
-import axios from 'axios';
-export default function SocialAdmin(){
-  const [data,setData]=useState({});
-  useEffect(()=>{ axios.get('/api/social').then(r=>setData(r.data)); },[]);
-  const save=async()=>{ await axios.put('/api/social', data); alert('Saved'); };
+import React, { useEffect, useState } from 'react';
+import { getSocial, updateSocial } from '../../services/api';
+
+export default function SocialAdmin() {
+  const [form, setForm] = useState({ github: '', linkedin: '', twitter: '' });
+  const [status, setStatus] = useState('');
+
+  useEffect(() => {
+    getSocial().then(res => setForm(res.data));
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('saving');
+    try {
+      await updateSocial(form);
+      setStatus('saved');
+      setTimeout(() => setStatus(''), 2000);
+    } catch (e) {
+      setStatus('error');
+    }
+  };
+
   return (
-    <div>
-      <h2 className='text-lg font-bold'>Social Links</h2>
-      <div className='mt-2 space-y-2 max-w-lg'>
-        <input value={data.github||''} onChange={e=>setData({...data,github:e.target.value})} placeholder='GitHub' className='w-full p-2 border rounded' />
-        <input value={data.linkedin||''} onChange={e=>setData({...data,linkedin:e.target.value})} placeholder='LinkedIn' className='w-full p-2 border rounded' />
-        <input value={data.twitter||''} onChange={e=>setData({...data,twitter:e.target.value})} placeholder='Twitter' className='w-full p-2 border rounded' />
-        <button onClick={save} className='px-4 py-2 bg-green-600 text-white rounded'>Save</button>
+    <div className="max-w-2xl">
+      <h1 className="text-3xl font-bold text-dark mb-6">Social Links</h1>
+      <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">GitHub URL</label>
+            <input 
+              value={form.github || ''} 
+              onChange={e => setForm({...form, github: e.target.value})} 
+              className="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">LinkedIn URL</label>
+            <input 
+              value={form.linkedin || ''} 
+              onChange={e => setForm({...form, linkedin: e.target.value})} 
+              className="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Twitter URL</label>
+            <input 
+              value={form.twitter || ''} 
+              onChange={e => setForm({...form, twitter: e.target.value})} 
+              className="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <button className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-600 transition">
+              {status === 'saving' ? 'Saving...' : 'Save Changes'}
+            </button>
+            {status === 'saved' && <span className="text-green-600 font-medium">Saved!</span>}
+          </div>
+        </form>
       </div>
     </div>
-  )
+  );
 }
