@@ -1,0 +1,18 @@
+extends base
+
+block content
+  p Hello Admin,
+  p You have received a new contact form submission with the following details:
+  
+  table(style='width: 100%; border-collapse: collapse;')
+    tr
+      td(style='padding: 8px; border: 1px solid #ddd;') Name
+      td(style='padding: 8px; border: 1px solid #ddd;')= name
+    tr
+      td(style='padding: 8px; border: 1px solid #ddd;') Email
+      td(style='padding: 8px; border: 1px solid #ddd;')= to
+    tr
+      td(style='padding: 8px; border: 1px solid #ddd;') Message
+      td(style='padding: 8px; border: 1px solid #ddd;')= message
+  
+  p Please respond to this inquiry as soon as possible.

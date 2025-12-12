@@ -10,6 +10,7 @@ import hpp from 'hpp';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
+import mongoose from 'mongoose';
 import { connectDB } from './config/db.js';
 import globalErrorHandler from './controllers/errorController.js';
 import AppError from './utils/appError.js';
@@ -108,15 +109,6 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/projects', projectRouter);
 app.use('/api/v1/contact', contactRouter);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '../client/build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-}
-
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
@@ -163,14 +155,3 @@ process.on('uncaughtException', (err) => {
 });
 
 export default app;
-
-app.use("/api/auth", authRouter);
-app.use("/api/projects", projectsRouter);
-app.use("/api/resume", resumeRouter);
-app.use("/api/contact", contactRouter);
-app.use("/api/skills", skillsRouter);
-app.use("/api/site-settings", siteSettingsRouter);
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});

@@ -1,0 +1,16 @@
+extends base
+
+block content
+  p Hello #{name},
+  p Welcome to my portfolio! Thank you for signing up.
+  p You can now log in to your account using your email and password.
+  
+  if url
+    p To get started, please click the button below:
+    a(href=url, style='text-decoration: none;')
+      .button Access Your Account
+    
+    p Or copy and paste this link into your browser:
+    p= url
+  
+  p If you have any questions, feel free to contact us.

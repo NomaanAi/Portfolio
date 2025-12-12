@@ -1,19 +1,32 @@
-
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu, X, LogIn, LogOut, User } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 function Navbar() {
   const location = useLocation();
   const [dark, setDark] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user"));
-  
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.reload();
+  const { user, logout, login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to log out', error);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      await login();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to log in', error);
+    }
   };
 
   useEffect(() => {
@@ -47,9 +60,30 @@ function Navbar() {
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {!user && (
+          {isAuthenticated ? (
             <div className="flex items-center gap-4">
-              <Link to="/login" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-accent transition-colors">Login</Link>
+              <Link 
+                to="/dashboard" 
+                className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-accent transition-colors"
+              >
+                <User size={16} />
+                {user?.name || 'Profile'}
+              </Link>
+              <button 
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link to="/login" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-accent transition-colors">
+                <span className="flex items-center gap-1">
+                  <LogIn size={16} /> Login
+                </span>
+              </Link>
               <Link to="/register" className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
                 Join
               </Link>
@@ -82,9 +116,26 @@ function Navbar() {
                 {dark ? <Sun size={18} /> : <Moon size={18} />} <span>Theme</span>
               </button>
               
-               {!user && (
+               {isAuthenticated ? (
                 <>
-                  <Link to="/login" className="text-slate-900 dark:text-slate-100 hover:text-accent">Login</Link>
+                  <Link to="/dashboard" className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-accent">
+                    <User size={16} />
+                    {user?.name || 'Profile'}
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 text-red-500 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-accent">
+                    <LogIn size={16} />
+                    Login
+                  </Link>
                   <Link to="/register" className="text-accent font-medium">Join Noman.dev</Link>
                 </>
                )}

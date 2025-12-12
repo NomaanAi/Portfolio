@@ -1,0 +1,6 @@
+
+User -> React Frontend (Vercel)
+Frontend -> Node API (Render)
+Node API -> MongoDB Atlas
+Node API -> Cloudinary
+Node API -> Email Service

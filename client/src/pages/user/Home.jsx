@@ -56,6 +56,7 @@ export default function Home() {
   const [groupedSkills, setGroupedSkills] = useState({});
   const [projectIndex, setProjectIndex] = useState(0);
   const [siteSettings, setSiteSettings] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,13 +77,39 @@ export default function Home() {
         setGroupedSkills(groupSkills(skillsRes.data));
         setSiteSettings(settingsRes.data);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching data:', err);
+        setError('Failed to load content. Please try again later.');
       }
     };
     fetchData();
   }, []);
 
-  if (!siteSettings) return null; // Loading state could be better but null avoids flash
+  // Loading state
+  if (!siteSettings) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center p-6 max-w-md mx-auto">
+          <div className="text-red-500 text-4xl mb-4">⚠️</div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Something went wrong</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-accent text-white rounded-md hover:opacity-90 transition-opacity"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div 
