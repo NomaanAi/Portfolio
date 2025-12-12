@@ -1,39 +1,45 @@
-# Portfolio + Admin (MongoDB Edition)
+# Full-Stack Portfolio with Admin Panel
 
-Full-stack starter for an AI/ML + Full-Stack engineer portfolio with:
+A production-ready portfolio application with authentication, admin dashboard, and cloud-based image uploads.
 
-- React + Tailwind client
-- Express backend
-- MongoDB (via Mongoose) for projects
-- JWT admin auth
-- Resume upload (Multer)
-- Admin panel for projects + resume
+---
 
-## 1. Backend setup
+## 🚀 Features
+- User & Admin authentication (JWT)
+- Role-based access control
+- Admin panel to manage projects
+- Image uploads using Cloudinary
+- Contact form with email notifications
+- Fully deployable (Vercel + Render)
 
-```bash
-cd server
-cp .env.example .env
-# edit .env and set MONGO_URI, ADMIN_EMAIL, ADMIN_PASSWORD, CLIENT_ORIGIN, JWT_SECRET
-npm install
-npm run dev
-```
+---
 
-To seed dummy projects:
+## 🧱 Tech Stack
+- Frontend: React (Vite)
+- Backend: Node.js, Express
+- Database: MongoDB Atlas
+- Image Storage: Cloudinary
+- Auth: JWT
+- Deployment: Vercel, Render
 
-```bash
-npm run seed
-```
+---
 
-## 2. Frontend setup
+## 🗂️ System Architecture
+![Architecture](docs/system_architecture.png)
 
-```bash
-cd client
-npm install
-echo "VITE_API_BASE_URL=http://localhost:5000" > .env
-npm run dev
-```
+---
 
-- Public site: http://localhost:5173
-- Admin login: http://localhost:5173/login
-  - Email & password from `server/.env`
+## ⚙️ Environment Variables
+
+```env
+MONGO_URI=
+JWT_SECRET=
+CLIENT_ORIGIN=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+EMAIL_USER=
+EMAIL_PASS=
+ADMIN_EMAIL=
