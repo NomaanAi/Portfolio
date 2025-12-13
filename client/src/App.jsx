@@ -23,6 +23,7 @@ import SkillsAdmin from "./pages/admin/Skills";
 import Settings from "./pages/admin/Settings";
 import SiteSettings from "./pages/admin/SiteSettings";
 import ResumeManager from "./pages/admin/ResumeManager";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   const location = useLocation();
@@ -51,7 +52,7 @@ export default function App() {
 
         {/* Admin Routes - Protected */}
         <Route path="/admin" element={
-          <ProtectedRoute>
+          <ProtectedRoute adminOnly={true}>
             <AdminLayout />
           </ProtectedRoute>
         }>

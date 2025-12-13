@@ -20,14 +20,18 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
+        // Verify token with backend
         const response = await api.get('/api/auth/me');
+        const userData = response.data.data.user;
 
-        setUser(response.data.data.user);
-        localStorage.setItem('role', response.data.data.user.role); // Sync role
+        setUser(userData);
+        localStorage.setItem('role', userData.role); // Sync role
       } catch (err) {
-        console.error('Auth check failed:', err);
+        console.warn('Auth check failed - clearing session:', err.message);
+        // Only clear if explicitly unauthorized or critical failure
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -45,13 +49,13 @@ export const AuthProvider = ({ children }) => {
       const { user } = response.data.data;
       
       localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role); // Persist role
+      localStorage.setItem('role', user.role);
       setUser(user);
       return { success: true, role: user.role };
     } catch (err) {
-      const error = err.response?.data?.message || 'Login failed';
-      setError(error);
-      return { success: false, error };
+      const errorMsg = err.response?.data?.message || 'Login failed';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
@@ -69,26 +73,25 @@ export const AuthProvider = ({ children }) => {
       const { token } = response.data;
       const { user } = response.data.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role); // Persist role
+      localStorage.setItem('role', user.role); 
       setUser(user);
       return { success: true };
     } catch (err) {
-      const error = err.response?.data?.message || 'Registration failed';
-      setError(error);
-      return { success: false, error };
+      const errorMsg = err.response?.data?.message || 'Registration failed';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   // Logout function
   const logout = async () => {
     try {
-        await api.get('/api/auth/logout'); // Clear server cookie
+        await api.get('/api/auth/logout'); 
     } catch (error) {
-        console.error("Logout error", error);
+        console.warn("Logout endpoint error (ignoring):", error);
     } finally {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        localStorage.removeItem('user');
         setUser(null);
         navigate('/login');
     }
@@ -103,7 +106,6 @@ export const AuthProvider = ({ children }) => {
       const { token, role } = response.data;
       const { user } = response.data.data;
       
-      // Double check role
       if (role !== 'admin') {
         throw new Error("Not authorized as admin");
       }
@@ -111,14 +113,17 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       
-      setUser({ ...user, role }); // Ensure user object has role
+      setUser({ ...user, role }); 
       return { success: true };
     } catch (err) {
-      const error = err.response?.data?.message || err.message || 'Admin login failed';
-      setError(error);
-      return { success: false, error };
+      const errorMsg = err.response?.data?.message || err.message || 'Admin login failed';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
+
+  const isAuthenticated = !!user;
+  const isAdmin = user?.role === 'admin' || localStorage.getItem('role') === 'admin';
 
   return (
     <AuthContext.Provider
@@ -127,14 +132,14 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         login,
-        loginAdmin, // Export new function
+        loginAdmin,
         register,
         logout,
-        isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin' || localStorage.getItem('role') === 'admin', // Fallback to localStorage for immediate check
+        isAuthenticated,
+        isAdmin,
       }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

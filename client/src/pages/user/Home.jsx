@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { motion } from "framer-motion";
@@ -6,10 +5,9 @@ import DownloadCV from "../../components/DownloadCV.jsx";
 import ProjectCard from "../../components/ProjectCard.jsx";
 import Hero from "../../components/Hero.jsx";
 import SEO from "../../components/SEO.jsx";
-import { Server, Database, Cpu, Layout, ArrowLeft, ArrowRight } from "lucide-react";
+import { Server, ArrowLeft, ArrowRight } from "lucide-react";
 
-
-
+// Animation Variants
 const container = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -20,8 +18,10 @@ const item = {
   show: { y: 0, opacity: 1 }
 };
 
-// Helper to group skills
-const groupSkills = (metrics) => {
+// Helper: Group skills
+const groupSkills = (metrics = []) => {
+  if (!Array.isArray(metrics)) return {};
+  
   const groups = {
     "Frontend & UI": ["React", "Vue", "Tailwind", "CSS", "HTML", "Javascript", "Typescript", "Next.js"],
     "Backend & Cloud": ["Node.js", "Express", "Python", "AWS", "Docker", "Firebase", "MongoDB", "SQL"],
@@ -36,8 +36,8 @@ const groupSkills = (metrics) => {
   metrics.forEach(skill => {
     let placed = false;
     for (const [group, keywords] of Object.entries(groups)) {
-       if (keywords.some(k => skill.name.toLowerCase().includes(k.toLowerCase())) || 
-           (skill.category && skill.category === group) // enhanced check if we add category later
+       if (keywords.some(k => skill?.name?.toLowerCase().includes(k.toLowerCase())) || 
+           (skill?.category && skill?.category === group)
        ) {
          result[group].push(skill);
          placed = true;
@@ -55,22 +55,20 @@ export default function Home() {
   const [skills, setSkills] = useState([]);
   const [groupedSkills, setGroupedSkills] = useState({});
   const [projectIndex, setProjectIndex] = useState(0);
-  const [siteSettings, setSiteSettings] = useState(null);
+  const [siteSettings, setSiteSettings] = useState({}); // Initialize as empty object
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
-    
-    // Resize listener to force re-render for slider logic
-    const handleResize = () => {
-        // Just triggering a re-render if needed, or we can use a state for window width
-        // But for now, we leave it as React state update handles re-render
-    };
-    window.addEventListener('resize', handleResize);
 
     const fetchData = async () => {
       try {
-        const results = await Promise.allSettled([
+        setIsLoading(true);
+        setError(null);
+
+        // Fetch all data in parallel
+        const [projectsRes, skillsRes, settingsRes] = await Promise.allSettled([
            api.get("/api/projects"),
            api.get("/api/skills"),
            api.get("/api/site-settings")
@@ -78,80 +76,75 @@ export default function Home() {
         
         if (!isMounted) return;
 
-        // Handle Projects
-        if (results[0].status === 'fulfilled') {
-            const projectsRes = results[0].value;
-            const allProjects = projectsRes.data?.data?.projects || [];
+        // 1. Projects
+        if (projectsRes.status === 'fulfilled') {
+            const allProjects = projectsRes.value.data?.data?.projects || [];
             const featuredProjects = allProjects.filter(p => p.featured);
-            setProjects(featuredProjects.length > 0 ? featuredProjects : allProjects.slice(0,4));
+            setProjects(featuredProjects.length > 0 ? featuredProjects : allProjects.slice(0, 4));
         } else {
-            console.error('Projects fetch failed:', results[0].reason);
+            console.warn('Home: Projects fetch failed', projectsRes.reason);
+            setProjects([]);
         }
 
-        // Handle Skills
-        if (results[1].status === 'fulfilled') {
-            const skillsRes = results[1].value;
-            const fetchedSkills = skillsRes.data?.data?.skills || [];
+        // 2. Skills
+        if (skillsRes.status === 'fulfilled') {
+            const fetchedSkills = skillsRes.value.data?.data?.skills || [];
             setSkills(fetchedSkills);
             setGroupedSkills(groupSkills(fetchedSkills));
         } else {
-             console.error('Skills fetch failed:', results[1].reason);
+             console.warn('Home: Skills fetch failed', skillsRes.reason);
+             setSkills([]);
+             setGroupedSkills({});
         }
 
-        // Handle Settings
-        if (results[2].status === 'fulfilled') {
-             const settingsRes = results[2].value;
-             setSiteSettings(settingsRes.data?.data?.siteSettings || {});
+        // 3. Settings
+        if (settingsRes.status === 'fulfilled') {
+             setSiteSettings(settingsRes.value.data?.data?.siteSettings || {});
         } else {
-             console.error('Settings fetch failed:', results[2].reason);
-             // If settings fail, we generally want to show something, maybe empty object?
-             setSiteSettings({});
-        }
-
-        // Only set Global Error if EVERYTHING failed
-        if (results.every(r => r.status === 'rejected')) {
-             setError('Failed to load content. Please check your connection.');
+             console.warn('Home: Settings fetch failed', settingsRes.reason);
+             // Verify if we can fallback to default
+             setSiteSettings({}); 
         }
 
       } catch (err) {
         if (isMounted) {
-          console.error('Error fetching data:', err);
-          setError('Failed to load content. Please try again later.');
+          console.error('Home: Critical data fetch error', err);
+          setError('Partially failed to load content.');
         }
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     };
+
     fetchData();
-    return () => { 
-        isMounted = false; 
-        window.removeEventListener('resize', handleResize);
-    };
+    return () => { isMounted = false; };
   }, []);
 
-  if (error) {
+  if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center p-6 max-w-md mx-auto">
-          <div className="text-red-500 text-4xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Something went wrong</h2>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-accent text-white rounded-md hover:opacity-90 transition-opacity"
-          >
-            Try Again
-          </button>
-        </div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
       </div>
     );
   }
 
-  // Loading state
-  if (!siteSettings) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
+  // Defensive: If critical render fails, show error but don't crash
+  if (error && projects.length === 0 && skills.length === 0) {
+     return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6">
+           <div className="text-red-500 text-4xl mb-4">⚠️</div>
+           <h2 className="text-xl font-bold text-slate-100 mb-2">Unable to Load Content</h2>
+           <p className="text-slate-400 mb-6 max-w-md">
+             We couldn't connect to the server. Please check your internet connection or try again later.
+           </p>
+           <button 
+             onClick={() => window.location.reload()}
+             className="px-6 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 transition-colors"
+           >
+             Retry Connection
+           </button>
+        </div>
+     );
   }
 
   return (
@@ -163,26 +156,27 @@ export default function Home() {
     >
       <SEO 
         title="Noman.dev | AI & Full-Stack Engineer" 
-        description={siteSettings.hero?.subtitle || "Portfolio"}
+        description={siteSettings?.hero?.subtitle || "Portfolio"}
       />
       
-      <Hero settings={siteSettings.hero} />
+      {/* Hero Section - Pass safe defaults */}
+      <Hero settings={siteSettings?.hero || {}} />
 
       {/* Intro / About */}
-      {siteSettings.sections?.about !== false && (
+      {siteSettings?.sections?.about !== false && (
         <section className="grid md:grid-cols-[1.5fr,1fr] gap-12 items-start py-12 border-b border-slate-900/50">
           <motion.div variants={item}>
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-100">
                <span className="w-8 h-[2px] bg-cyan-500"></span> About The System
             </h2>
             <div className="space-y-4 text-slate-400 leading-relaxed text-lg whitespace-pre-wrap">
-              {siteSettings.about?.text || "Welcome to my portfolio."}
+              {siteSettings?.about?.text || "Creating intelligent systems that solve real-world problems."}
             </div>
           </motion.div>
 
-          {/* Connector Section: How I Build (Static for now, could be dynamic later) */}
+          {/* Connector Section */}
           <motion.div variants={item} className="bg-slate-950 border border-slate-900 p-6 rounded-2xl">
-             <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6 border-b border-slate-900 pb-2">
+             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 border-b border-slate-900 pb-2">
                Engineering Philosophy
              </h3>
              <ul className="space-y-4">
@@ -206,7 +200,7 @@ export default function Home() {
       )}
 
       {/* Tech Stack - Grouped */}
-      {siteSettings.sections?.skills !== false && (
+      {siteSettings?.sections?.skills !== false && skills.length > 0 && (
         <section className="py-12 border-b border-slate-900/50">
           <motion.div variants={item} className="flex items-center justify-between mb-8">
              <h2 className="text-2xl font-bold text-slate-200">Technologies</h2>
@@ -215,13 +209,13 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
              {Object.entries(groupedSkills).map(([category, categorySkills]) => (
-                categorySkills.length > 0 && (
+                categorySkills?.length > 0 && (
                   <motion.div key={category} variants={item} className="space-y-3">
                      <h3 className="text-xs font-bold text-cyan-500 uppercase tracking-widest">{category}</h3>
                      <div className="flex flex-wrap gap-2">
                         {categorySkills.map(s => (
-                           <span key={s._id} className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded font-mono text-[11px] text-slate-400" title={s.linkedProjects?.length > 0 ? `Used in ${s.linkedProjects.length} projects` : ''}>
-                             {s.name} {s.linkedProjects?.length > 0 && <span className="ml-1 opacity-50">({s.linkedProjects.length})</span>}
+                           <span key={s._id || s.name} className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded font-mono text-[11px] text-slate-400">
+                             {s.name}
                            </span>
                         ))}
                      </div>
@@ -233,7 +227,7 @@ export default function Home() {
       )}
 
       {/* Projects Slider */}
-      {siteSettings.sections?.projects !== false && (
+      {siteSettings?.sections?.projects !== false && (
       <section className="py-12 space-y-8">
         <motion.div variants={item} className="flex items-end justify-between">
           <div>
@@ -250,8 +244,8 @@ export default function Home() {
                  <ArrowLeft size={16}/>
                </button>
                <button 
-                 onClick={() => setProjectIndex(prev => Math.min(projects.length - (window.innerWidth >= 768 ? 2 : 1), prev + 1))}
-                 disabled={projects.length <= (window.innerWidth >= 768 ? 2 : 1) || projectIndex >= projects.length - (window.innerWidth >= 768 ? 2 : 1)}
+                 onClick={() => setProjectIndex(prev => Math.min(Math.max(0, projects.length - 1), prev + 1))}
+                 disabled={projects.length <= 1 || projectIndex >= projects.length - 1} // simplified logic for safety
                  className="p-2 border border-slate-800 rounded bg-slate-900 text-slate-400 hover:text-cyan-400 disabled:opacity-30"
                >
                  <ArrowRight size={16}/>
@@ -266,12 +260,12 @@ export default function Home() {
         {projects.length === 0 ? (
           <motion.div variants={item} className="p-12 text-center border border-dashed border-slate-800 rounded-xl bg-slate-950/50">
             <p className="text-slate-400 font-mono">
-              No featured projects available.
+              Systems offline. No projects to display.
             </p>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-             {projects.slice(projectIndex, projectIndex + (window.innerWidth >= 768 ? 2 : 1)).map((p) => (
+             {projects.slice(projectIndex, projectIndex + 2).map((p) => (
                <motion.div key={p._id} layout initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
                  <ProjectCard project={p} />
                </motion.div>
