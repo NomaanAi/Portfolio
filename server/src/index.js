@@ -49,11 +49,29 @@ app.use(helmet());
 // Enable CORS
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      process.env.CLIENT_URL,
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        process.env.CLIENT_ORIGIN,
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://portfolio-admin-client.vercel.app' // Fallback/Common Vercel URL
+      ];
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if origin is allowed
+      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+        callback(null, true);
+      } else {
+        // Optional: Log blocked origin for debugging
+        console.log('Blocked by CORS:', origin);
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        callback(new Error(msg), false);
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
   })
 );
 

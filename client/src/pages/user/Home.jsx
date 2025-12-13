@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import DownloadCV from "../../components/DownloadCV.jsx";
 import ProjectCard from "../../components/ProjectCard.jsx";
@@ -8,7 +8,7 @@ import Hero from "../../components/Hero.jsx";
 import SEO from "../../components/SEO.jsx";
 import { Server, Database, Cpu, Layout, ArrowLeft, ArrowRight } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 const container = {
   hidden: { opacity: 0 },
@@ -71,9 +71,9 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const results = await Promise.allSettled([
-           axios.get(`${API_BASE}/api/projects`),
-           axios.get(`${API_BASE}/api/skills`),
-           axios.get(`${API_BASE}/api/site-settings`)
+           api.get("/api/projects"),
+           api.get("/api/skills"),
+           api.get("/api/site-settings")
         ]);
         
         if (!isMounted) return;

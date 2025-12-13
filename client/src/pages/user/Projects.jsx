@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import ProjectCard from "../../components/ProjectCard";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 const container = {
   hidden: { opacity: 0 },
@@ -25,8 +25,8 @@ export default function Projects() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`${API_BASE}/api/projects`)
+    api
+      .get("/api/projects")
       .then((res) => setProjects(res.data.data.projects))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
 import SEO from "../../components/SEO";
@@ -14,7 +14,7 @@ export default function Contact() {
     setStatus("sending");
     
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/contact`, form);
+      await api.post("/api/contact", form);
       setStatus("success");
       setForm({ name: "", email: "", message: "" });
       setTimeout(() => setStatus("idle"), 3000);

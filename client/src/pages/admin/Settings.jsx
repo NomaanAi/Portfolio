@@ -1,11 +1,11 @@
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { User, Lock, Save } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function Settings() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || {});
@@ -23,10 +23,9 @@ export default function Settings() {
     setError("");
 
     try {
-      const res = await axios.put(
-        `${API_BASE}/api/auth/profile`,
-        { name, email, password },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const res = await api.put(
+        "/api/auth/profile",
+        { name, email, password }
       );
       
       const updatedUser = res.data.user;

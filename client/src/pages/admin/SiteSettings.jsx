@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { Save, Layout, Type } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function SiteSettings() {
   const [settings, setSettings] = useState({
@@ -16,7 +16,7 @@ export default function SiteSettings() {
   const [message, setMessage] = useState("");
 
   const token = localStorage.getItem("token");
-  const authConfig = { headers: { Authorization: `Bearer ${token}` } };
+
 
   useEffect(() => {
     fetchSettings();
@@ -24,7 +24,7 @@ export default function SiteSettings() {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/site-settings`);
+      const res = await api.get("/api/site-settings");
       if (res.data) setSettings(res.data);
     } catch (err) {
       console.error(err);
@@ -37,7 +37,7 @@ export default function SiteSettings() {
     e.preventDefault();
     setMessage("");
     try {
-      await axios.put(`${API_BASE}/api/site-settings`, settings, authConfig);
+      await api.put("/api/site-settings", settings);
       setMessage("Settings updated successfully");
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {

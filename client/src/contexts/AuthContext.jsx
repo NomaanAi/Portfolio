@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -20,10 +20,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-        const response = await axios.get(`${API_BASE}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await api.get('/api/auth/me');
 
         setUser(response.data.data.user);
         localStorage.setItem('role', response.data.data.user.role); // Sync role
@@ -43,18 +40,12 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
+      const response = await api.post('/api/auth/login', { email, password });
       const { token } = response.data;
       const { user } = response.data.data;
       
       localStorage.setItem('token', token);
       localStorage.setItem('role', user.role); // Persist role
-      // Sync user to localStorage for persistence across refreshes if needed, 
-      // but Context usually relies on checkAuth. 
-      // However, Login.jsx was setting "user" in localStorage. 
-      // We should probably allow checkAuth to hydrate it, or set it here too if we rely on it.
-      // But let's stick to standard Context pattern: update state.
       setUser(user);
       return { success: true, role: user.role };
     } catch (err) {
@@ -68,10 +59,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       setError(null);
-      // Use full URL or proxy. Assuming proxy is set or we should use VITE_API_BASE_URL
-      // Best to align with pages.
-      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const response = await axios.post(`${API_BASE}/api/auth/signup`, {
+      const response = await api.post('/api/auth/signup', {
         name,
         email,
         password,
@@ -94,8 +82,7 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-        await axios.get(`${API_BASE}/api/auth/logout`); // Clear server cookie
+        await api.get('/api/auth/logout'); // Clear server cookie
     } catch (error) {
         console.error("Logout error", error);
     } finally {
@@ -111,22 +98,20 @@ export const AuthProvider = ({ children }) => {
   const loginAdmin = async (email, password) => {
     try {
       setError(null);
-      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      // Use the UNIFIED login route
-      const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
+      const response = await api.post('/api/auth/admin/login', { email, password });
       
-      // The backend returns { token, user: { ... } }
-      const { token, user } = response.data;
+      const { token, role } = response.data;
+      const { user } = response.data.data;
       
-      // Check role
-      if (user.role !== 'admin') {
+      // Double check role
+      if (role !== 'admin') {
         throw new Error("Not authorized as admin");
       }
 
       localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role);
+      localStorage.setItem('role', role);
       
-      setUser(user);
+      setUser({ ...user, role }); // Ensure user object has role
       return { success: true };
     } catch (err) {
       const error = err.response?.data?.message || err.message || 'Admin login failed';

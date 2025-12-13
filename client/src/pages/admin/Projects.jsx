@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { Plus, Edit2, Trash2, Github, ExternalLink, ArrowUp, Star } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -35,16 +35,12 @@ export default function Projects() {
 
   const token = localStorage.getItem("token");
 
-  const authConfig = {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+
 
   const loadProjects = async () => {
     try {
       // Use admin endpoint to get drafts too
-      const res = await axios.get(`${API_BASE}/api/projects`, authConfig);
+      const res = await api.get("/api/projects");
       // Backend returns { status: 'success', data: { projects: [] } }
       setProjects(res.data.data.projects);
     } catch (error) {
@@ -101,10 +97,10 @@ export default function Projects() {
 
     try {
       if (form.id) {
-        await axios.put(`${API_BASE}/api/projects/${form.id}`, payload, authConfig);
+        await api.put(`/api/projects/${form.id}`, payload);
         setMessage("Project updated successfully");
       } else {
-        await axios.post(`${API_BASE}/api/projects`, payload, authConfig);
+        await api.post("/api/projects", payload);
         setMessage("Project created successfully");
       }
       resetForm();
@@ -144,7 +140,7 @@ export default function Projects() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this project?")) return;
     try {
-      await axios.delete(`${API_BASE}/api/projects/${id}`, authConfig);
+      await api.delete(`/api/projects/${id}`);
       setMessage("Project deleted successfully");
       await loadProjects();
       setTimeout(() => setMessage(""), 3000);

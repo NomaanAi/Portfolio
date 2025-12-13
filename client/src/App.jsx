@@ -5,16 +5,12 @@ import { AnimatePresence } from "framer-motion";
 // Layouts
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
-// Guards
-import { RequireAuth, RequireAdmin } from "./routes/guards";
-
 // User Pages
 import Home from "./pages/user/Home";
 import About from "./pages/user/About";
 import Projects from "./pages/user/Projects";
 import Contact from "./pages/user/Contact";
-// import Login from "./pages/user/Login"; // OLD
-import Login from "./pages/Login"; // NEW
+import Login from "./pages/user/Login";
 import Register from "./pages/user/Register";
 import ProjectDetails from "./pages/user/ProjectDetails";
 import Profile from "./pages/user/Profile";
@@ -33,38 +29,39 @@ export default function App() {
 
   return (
     <AnimatePresence mode="wait">
-    <Routes>
-        <Route path="/login" element={<Login />} />
+      <Routes location={location} key={location.pathname}>
+        {/* User Routes */}
+        <Route element={<UserLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectDetails />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+        </Route>
+
+        {/* Admin Login - Separated */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        <Route
-          path="/admin/dashboard"
-          element={
-            <RequireAuth>
-              <RequireAdmin>
-                <Dashboard />
-              </RequireAdmin>
-            </RequireAuth>
-          }
-        />
-
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <Home />
-            </RequireAuth>
-          }
-        />
-        {/* Keeping other routes accessible if needed, or strictly following prompt? 
-            User said 'Fix ALL...'. I will add the others as open routes or guarded if logical, 
-            but strictly the prompt only mandates the above. 
-            I will add back the other existing routes (About, Projects etc) to avoid breaking the whole app 
-            but ensure Home and Admin are strictly guarded. */}
-         <Route path="/about" element={<About />} />
-         <Route path="/projects" element={<Projects />} />
-         <Route path="/contact" element={<Contact />} />
-         <Route path="/register" element={<Register />} />
+        {/* Admin Routes - Protected */}
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Dashboard />} />
+          <Route path="projects" element={<ProjectsAdmin />} />
+          <Route path="skills" element={<SkillsAdmin />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="site-settings" element={<SiteSettings />} />
+          <Route path="resume" element={<ResumeManager />} />
+        </Route>
       </Routes>
     </AnimatePresence>
   );

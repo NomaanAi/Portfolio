@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { ArrowLeft, Github, ExternalLink, Calendar, Layers, Cpu, GitBranch, AlertTriangle, CheckCircle, Database } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 const Section = ({ title, icon: Icon, children, className = "" }) => (
   <section className={`py-12 border-b border-white/5 ${className}`}>
@@ -28,7 +28,7 @@ export default function ProjectDetails() {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/api/projects/${id}`);
+        const res = await api.get(`/api/projects/${id}`);
         setProject(res.data);
       } catch (err) {
         setError("Project not found or unpublished.");

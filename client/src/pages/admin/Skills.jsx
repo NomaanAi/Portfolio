@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function Skills() {
   const [skills, setSkills] = useState([]);
@@ -21,16 +21,12 @@ export default function Skills() {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
-  const authConfig = {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+
 
   const loadSkills = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/api/skills`);
+      const res = await api.get("/api/skills");
       // Correctly access nested data structure: { status: 'success', data: { skills: [...] } }
       setSkills(res.data.data?.skills || []); 
     } catch (error) {
@@ -66,10 +62,10 @@ export default function Skills() {
 
     try {
       if (form.id) {
-        await axios.put(`${API_BASE}/api/skills/${form.id}`, payload, authConfig);
+        await api.put(`/api/skills/${form.id}`, payload);
         setMessage("Skill updated successfully");
       } else {
-        await axios.post(`${API_BASE}/api/skills`, payload, authConfig);
+        await api.post("/api/skills", payload);
         setMessage("Skill created successfully");
       }
       resetForm();
@@ -94,7 +90,7 @@ export default function Skills() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this skill?")) return;
     try {
-      await axios.delete(`${API_BASE}/api/skills/${id}`, authConfig);
+      await api.delete(`/api/skills/${id}`);
       setMessage("Skill deleted successfully");
       await loadSkills();
       setTimeout(() => setMessage(""), 3000);

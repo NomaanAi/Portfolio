@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { useAuth } from "../../contexts/AuthContext";
 import { motion } from "framer-motion";
 import SEO from "../../components/SEO";
 import { User, Lock, Save, AlertCircle, CheckCircle } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function Profile() {
   const { user, setUser } = useAuth(); // We might need to update user context after profile update
@@ -37,8 +37,8 @@ export default function Profile() {
     setProfileMessage({ type: "", text: "" });
 
     try {
-      const res = await axios.patch(
-        `${API_BASE}/api/auth/updateMe`,
+      const res = await api.patch(
+        "/api/auth/updateMe",
         { name, email },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
@@ -73,8 +73,8 @@ export default function Profile() {
     }
 
     try {
-        const res = await axios.patch(
-            `${API_BASE}/api/auth/updateMyPassword`,
+        const res = await api.patch(
+            "/api/auth/updateMyPassword",
             { 
                 passwordCurrent: currentPassword,
                 password: newPassword,

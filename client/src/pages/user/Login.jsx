@@ -1,13 +1,13 @@
 
 import { useState } from "react";
-import axios from "axios";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");

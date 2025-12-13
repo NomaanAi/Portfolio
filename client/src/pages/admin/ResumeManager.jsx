@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { Upload, FileText, CheckCircle, Clock } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function ResumeManager() {
   const [resumes, setResumes] = useState([]);
@@ -14,7 +14,7 @@ export default function ResumeManager() {
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
-  const authConfig = { headers: { Authorization: `Bearer ${token}` } };
+
 
   useEffect(() => {
     fetchResumes();
@@ -22,7 +22,7 @@ export default function ResumeManager() {
 
   const fetchResumes = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/resume`, authConfig);
+      const res = await api.get("/api/resume");
       setResumes(res.data);
     } catch (err) {
       console.error(err);
@@ -39,7 +39,7 @@ export default function ResumeManager() {
     formData.append("versionLabel", versionLabel);
 
     try {
-      await axios.post(`${API_BASE}/api/resume/upload`, formData, authConfig);
+      await api.post("/api/resume/upload", formData);
       setMessage("Resume uploaded successfully");
       setFile(null);
       setVersionLabel("");
@@ -53,7 +53,7 @@ export default function ResumeManager() {
 
   const handleSetActive = async (id) => {
     try {
-      await axios.put(`${API_BASE}/api/resume/${id}/active`, {}, authConfig);
+      await api.put(`/api/resume/${id}/active`, {});
       fetchResumes();
     } catch (err) {
       console.error("Error setting active resume");
@@ -151,7 +151,7 @@ export default function ResumeManager() {
                            Set Active
                          </button>
                        )}
-                       <a href={`${API_BASE}/api/resume/active`} target="_blank" className="text-xs text-slate-500 hover:text-accent underline">
+                       <a href={`${import.meta.env.VITE_API_URL}/api/resume/active`} target="_blank" className="text-xs text-slate-500 hover:text-accent underline">
                          View
                        </a>
                     </div>

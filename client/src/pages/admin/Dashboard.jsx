@@ -1,12 +1,12 @@
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { motion } from "framer-motion";
 import { Upload, FileText, Code2, FolderGit2, Plus, Clock, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ projects: 0, skills: 0, lastProject: null });
@@ -20,9 +20,9 @@ export default function Dashboard() {
     const fetchStats = async () => {
       try {
         const [projectsRes, skillsRes, healthRes] = await Promise.all([
-          axios.get(`${API_BASE}/api/projects`),
-          axios.get(`${API_BASE}/api/skills`),
-          axios.get(`${API_BASE}/api/health`)
+          api.get("/api/projects"),
+          api.get("/api/skills"),
+          api.get("/api/health")
         ]);
         setStats({
           projects: projectsRes.data.length,
@@ -47,7 +47,7 @@ export default function Dashboard() {
     formData.append("resume", resumeFile);
 
     try {
-      await axios.post(`${API_BASE}/api/resume`, formData, {
+      await api.post("/api/resume", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
