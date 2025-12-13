@@ -24,6 +24,7 @@ const createSendToken = (user, statusCode, req, res, role = 'user') => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Required for cross-site cookies (Vercel <-> Render)
   };
 
   // Remove password from output

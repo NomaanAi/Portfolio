@@ -8,7 +8,7 @@ import Hero from "../../components/Hero.jsx";
 import SEO from "../../components/SEO.jsx";
 import { Server, Database, Cpu, Layout, ArrowLeft, ArrowRight } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const container = {
   hidden: { opacity: 0 },

@@ -50,17 +50,28 @@ app.use(helmet());
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [process.env.CLIENT_ORIGIN, 'http://localhost:5173', 'http://localhost:3000'];
+      const allowedOrigins = [
+        process.env.CLIENT_ORIGIN,
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://portfolio-admin-client.vercel.app' // Fallback/Common Vercel URL
+      ];
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || !process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+
+      // Check if origin is allowed
+      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
         callback(null, true);
       } else {
+        // Optional: Log blocked origin for debugging
+        console.log('Blocked by CORS:', origin);
         const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
         callback(new Error(msg), false);
       }
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
   })
 );
 
@@ -135,10 +146,10 @@ app.use('/api/upload', uploadRouter);
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
-  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.use(express.static(path.join(__dirname, '../client/dist')));
 
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
   });
 }
 

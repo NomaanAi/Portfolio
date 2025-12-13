@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Github, ExternalLink, Calendar, Layers, Cpu, GitBranch, AlertTriangle, CheckCircle, Database } from "lucide-react";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Section = ({ title, icon: Icon, children, className = "" }) => (
   <section className={`py-12 border-b border-white/5 ${className}`}>

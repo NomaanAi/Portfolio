@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import ProjectCard from "../../components/ProjectCard";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const container = {
   hidden: { opacity: 0 },

@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
         const response = await axios.get(`${API_BASE}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
       const { token } = response.data;
       const { user } = response.data.data;
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       // Use full URL or proxy. Assuming proxy is set or we should use VITE_API_BASE_URL
       // Best to align with pages.
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const response = await axios.post(`${API_BASE}/api/auth/signup`, {
         name,
         email,
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-        const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
         await axios.get(`${API_BASE}/api/auth/logout`); // Clear server cookie
     } catch (error) {
         console.error("Logout error", error);

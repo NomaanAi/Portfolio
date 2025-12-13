@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import SEO from "../../components/SEO";
 import { User, Lock, Save, AlertCircle, CheckCircle } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Profile() {
   const { user, setUser } = useAuth(); // We might need to update user context after profile update

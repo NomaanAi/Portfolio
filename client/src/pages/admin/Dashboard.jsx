@@ -6,7 +6,7 @@ import { Upload, FileText, Code2, FolderGit2, Plus, Clock, Globe, ArrowRight } f
 import { Link } from "react-router-dom";
 import SEO from "../../components/SEO";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ projects: 0, skills: 0, lastProject: null });
