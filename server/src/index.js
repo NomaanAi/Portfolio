@@ -53,7 +53,8 @@ app.use(
       const allowedOrigins = [
         process.env.CLIENT_ORIGIN,
         process.env.CLIENT_URL,
-        process.env.VITE_API_URL, // Sometimes users put the frontend URL here by mistake, but we can trust it if it matches
+        process.env.VITE_API_URL,
+        // Localhost allowed for development - remove in strict production if needed
         'http://localhost:5173',
         'http://localhost:3000',
         'http://127.0.0.1:5173'

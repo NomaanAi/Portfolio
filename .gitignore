@@ -6,7 +6,8 @@ yarn-error.log*
 .env
 
 # Vite / build
-/dist
+dist/
+client/dist/
 /.vite
 
 # OS

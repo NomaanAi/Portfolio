@@ -5,11 +5,14 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_URL;
 
 if (!baseURL) {
-    console.error("CRITICAL: VITE_API_URL is not defined in this environment. API calls will fail.");
+    const errorMsg = "CRITICAL: VITE_API_URL is not defined! The app cannot connect to the backend.";
+    console.error(errorMsg);
+    // In production, we might want to throw to stop the app from trying weird URLs
+    if (import.meta.env.PROD) throw new Error(errorMsg);
 }
 
 const api = axios.create({
-    baseURL: baseURL, // Do not fallback to localhost in production code!
+    baseURL: baseURL,
     headers: {
         'Content-Type': 'application/json',
     },
