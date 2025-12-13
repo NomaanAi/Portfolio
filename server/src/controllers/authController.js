@@ -252,11 +252,19 @@ export const updateProfile = async (req, res, next) => {
     if (name) updateData.name = name;
     if (email) updateData.email = email;
 
-    // 3) Update user document
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    // 3) Update user document based on role
+    let updatedUser;
+    if (req.user.role === 'admin') {
+      updatedUser = await Admin.findByIdAndUpdate(req.user.id, updateData, {
+        new: true,
+        runValidators: true,
+      });
+    } else {
+      updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+        new: true,
+        runValidators: true,
+      });
+    }
 
     res.status(200).json({
       status: 'success',
@@ -273,7 +281,12 @@ export const updateProfile = async (req, res, next) => {
 export const updatePassword = async (req, res, next) => {
   try {
     // 1) Get user from collection
-    const user = await User.findById(req.user.id).select('+password');
+    let user;
+    if (req.user.role === 'admin') {
+      user = await Admin.findById(req.user.id).select('+password');
+    } else {
+      user = await User.findById(req.user.id).select('+password');
+    }
 
     // 2) Check if POSTed current password is correct
     if (!(await user.comparePassword(req.body.passwordCurrent, user.password))) {
@@ -289,7 +302,7 @@ export const updatePassword = async (req, res, next) => {
     await user.save();
 
     // 4) Log user in, send JWT
-    createSendToken(user, 200, req, res, 'user');
+    createSendToken(user, 200, req, res, req.user.role);
   } catch (err) {
     console.error('Update Password Error:', err);
     res.status(500).json({ status: 'error', message: err.message });
