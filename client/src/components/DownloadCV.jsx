@@ -9,8 +9,9 @@ export default function DownloadCV() {
     e.preventDefault();
     setDownloading(true);
     try {
-      const response = await api.get('/api/resume', {
-        responseType: 'blob', // Important for binary data
+      // Use public or protected /active endpoint which returns the actual file (or redirect)
+      const response = await api.get('/api/resume/active', {
+        responseType: 'blob', 
       });
 
       // Create a blob link to download

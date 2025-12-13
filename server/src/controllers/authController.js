@@ -6,11 +6,11 @@ export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!email || !password)
-    return res.status(400).json({ message: "Missing fields" });
+    return res.status(400).json({ status: "fail", message: "Missing fields" });
 
   const exists = await User.findOne({ email });
   if (exists)
-    return res.status(409).json({ message: "User exists" });
+    return res.status(409).json({ status: "fail", message: "User exists" });
 
   const hashed = await bcrypt.hash(password, 10);
 
@@ -20,7 +20,19 @@ export const signup = async (req, res) => {
     password: hashed,
   });
 
-  res.status(201).json({ message: "Signup successful" });
+  const token = jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  user.password = undefined;
+
+  res.status(201).json({
+    status: "success",
+    token,
+    user
+  });
 };
 
 export const login = async (req, res) => {
@@ -28,11 +40,11 @@ export const login = async (req, res) => {
 
   const user = await User.findOne({ email }).select("+password");
   if (!user)
-    return res.status(401).json({ message: "Invalid credentials" });
+    return res.status(401).json({ status: "fail", message: "Invalid credentials" });
 
   const match = await bcrypt.compare(password, user.password);
   if (!match)
-    return res.status(401).json({ message: "Invalid credentials" });
+    return res.status(401).json({ status: "fail", message: "Invalid credentials" });
 
   const token = jwt.sign(
     { id: user._id, role: user.role },
@@ -42,7 +54,11 @@ export const login = async (req, res) => {
 
   user.password = undefined;
 
-  res.json({ token, user });
+  res.json({
+    status: "success",
+    token,
+    user
+  });
 };
 
 export const adminLogin = async (req, res) => {
@@ -50,11 +66,11 @@ export const adminLogin = async (req, res) => {
 
   const user = await User.findOne({ email }).select("+password");
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    return res.status(401).json({ status: "fail", message: "Invalid credentials" });
   }
 
   if (user.role !== 'admin') {
-    return res.status(403).json({ message: "Not authorized as admin" });
+    return res.status(403).json({ status: "fail", message: "Not authorized as admin" });
   }
 
   const token = jwt.sign(
@@ -65,10 +81,9 @@ export const adminLogin = async (req, res) => {
 
   user.password = undefined;
 
-  // Match frontend expectation: { token, role, data: { user } }
   res.json({
+    status: "success",
     token,
-    role: user.role,
-    data: { user }
+    user
   });
 };

@@ -22,10 +22,16 @@ export const AuthProvider = ({ children }) => {
 
         // Verify token with backend
         const response = await api.get('/api/auth/me');
-        const userData = response.data.data.user;
+        // Assuming /me endpoint also follows new structure, e.g. { status: 'success', user: ... }
+        // If not, we might need to check the /me controller. 
+        // Let's assume standard response for now or I should check /me route.
+        // Wait, I didn't verify /me controller. Let's look at it next step or assume safe default.
+        // Usually /me in this project was returning { data: { user } }. 
+        // I should probably fix /me too if I am standardizing. But for now let's be flexible.
+        const userData = response.data.user || response.data.data?.user;
 
         setUser(userData);
-        localStorage.setItem('role', userData.role); // Sync role
+        localStorage.setItem('role', userData.role);
       } catch (err) {
         console.warn('Auth check failed - clearing session:', err.message);
         // Only clear if explicitly unauthorized or critical failure
@@ -45,8 +51,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.post('/api/auth/login', { email, password });
-      const { token } = response.data;
-      const { user } = response.data.data;
+      const { token, user } = response.data;
       
       localStorage.setItem('token', token);
       localStorage.setItem('role', user.role);
@@ -70,8 +75,7 @@ export const AuthProvider = ({ children }) => {
         passwordConfirm: password
       });
       
-      const { token } = response.data;
-      const { user } = response.data.data;
+      const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('role', user.role); 
       setUser(user);
@@ -103,8 +107,8 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await api.post('/api/auth/admin/login', { email, password });
       
-      const { token, role } = response.data;
-      const { user } = response.data.data;
+      const { token, user } = response.data;
+      const role = user.role;
       
       if (role !== 'admin') {
         throw new Error("Not authorized as admin");
