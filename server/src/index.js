@@ -52,19 +52,23 @@ app.use(
     origin: (origin, callback) => {
       const allowedOrigins = [
         process.env.CLIENT_ORIGIN,
+        process.env.CLIENT_URL,
+        process.env.VITE_API_URL, // Sometimes users put the frontend URL here by mistake, but we can trust it if it matches
         'http://localhost:5173',
         'http://localhost:3000',
-        'https://portfolio-admin-client.vercel.app' // Fallback/Common Vercel URL
+        'http://127.0.0.1:5173'
       ];
+
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
       // Check if origin is allowed
-      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      const isAllowed = allowedOrigins.some(o => o && (o === origin || o.replace(/\/$/, '') === origin));
+      
+      if (isAllowed || process.env.NODE_ENV === 'development') {
         callback(null, true);
       } else {
-        // Optional: Log blocked origin for debugging
-        console.log('Blocked by CORS:', origin);
+        console.warn(`[CORS] Blocked request from origin: ${origin}. Add this URL to CLIENT_ORIGIN in your backend environment variables.`);
         const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
         callback(new Error(msg), false);
       }

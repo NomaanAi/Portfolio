@@ -55,7 +55,7 @@ export default function Contact() {
             </div>
             <div>
               <p className="text-sm text-slate-400">Email</p>
-              <p className="font-medium">contact@nomaan.dev</p>
+              <p className="font-medium">nomanshaikh0998@gmail.com</p>
             </div>
           </div>
           
@@ -65,7 +65,7 @@ export default function Contact() {
             </div>
             <div>
               <p className="text-sm text-slate-400">Location</p>
-              <p className="font-medium">New Delhi, India</p>
+              <p className="font-medium">Ahmedabad, India</p>
             </div>
           </div>
         </div>
