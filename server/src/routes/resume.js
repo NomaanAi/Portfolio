@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { protect, restrictTo } from "../middleware/auth.js";
+import { requireAuth, requireAdmin } from "../middleware/auth.js";
 import Resume from "../models/Resume.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 
@@ -47,7 +47,7 @@ router.get("/active", async (req, res) => {
 
 
 // GET all resumes (Admin)
-router.get("/", protect, restrictTo("admin"), async (req, res) => {
+router.get("/", requireAuth, requireAdmin, async (req, res) => {
   try {
     const resumes = await Resume.find().sort({ uploadedAt: -1 });
     res.json(resumes);
@@ -59,8 +59,8 @@ router.get("/", protect, restrictTo("admin"), async (req, res) => {
 // Upload new resume (Admin)
 router.post(
   "/upload",
-  protect,
-  restrictTo("admin"),
+  requireAuth,
+  requireAdmin,
   upload.single("resume"),
   async (req, res) => {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
@@ -90,7 +90,7 @@ router.post(
 );
 
 // Set active resume (Admin)
-router.put("/:id/active", protect, restrictTo("admin"), async (req, res) => {
+router.put("/:id/active", requireAuth, requireAdmin, async (req, res) => {
   try {
     await Resume.updateMany({}, { isActive: false });
     const updated = await Resume.findByIdAndUpdate(req.params.id, { isActive: true }, { new: true });

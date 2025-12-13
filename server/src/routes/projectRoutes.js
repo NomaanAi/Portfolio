@@ -1,6 +1,6 @@
 import express from 'express';
 import * as projectController from '../controllers/projectController.js';
-import { protect, restrictTo } from '../middleware/auth.js';
+import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import { uploadMultipleImages } from '../middleware/upload.js';
 
 const router = express.Router();
@@ -10,10 +10,10 @@ router.get('/', projectController.getAllProjects);
 router.get('/:id', projectController.getProject);
 
 // Protected routes (require authentication)
-router.use(protect);
+router.use(requireAuth);
 
 // Admin-only routes
-router.use(restrictTo('admin'));
+router.use(requireAdmin);
 
 // Project CRUD operations
 router.post('/', projectController.createProject);

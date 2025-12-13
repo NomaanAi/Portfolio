@@ -112,20 +112,21 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const response = await axios.post(`${API_BASE}/api/auth/admin/login`, { email, password });
+      // Use the UNIFIED login route
+      const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
       
-      const { token, role } = response.data;
-      const { user } = response.data.data;
+      // The backend returns { token, user: { ... } }
+      const { token, user } = response.data;
       
-      // Double check role
-      if (role !== 'admin') {
+      // Check role
+      if (user.role !== 'admin') {
         throw new Error("Not authorized as admin");
       }
 
       localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
+      localStorage.setItem('role', user.role);
       
-      setUser({ ...user, role }); // Ensure user object has role
+      setUser(user);
       return { success: true };
     } catch (err) {
       const error = err.response?.data?.message || err.message || 'Admin login failed';
