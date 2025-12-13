@@ -5,9 +5,6 @@ import Email from '../utils/email.js';
 // @desc    Submit contact form
 // @route   POST /api/contact
 // @access  Public
-// @desc    Submit contact form
-// @route   POST /api/contact
-// @access  Public
 export const submitContactForm = async (req, res, next) => {
   try {
     const { name, email, subject, message } = req.body;

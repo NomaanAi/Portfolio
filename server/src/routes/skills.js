@@ -1,6 +1,7 @@
 
 import express from "express";
 import Skill from "../models/Skill.js";
+import { protect, restrictTo } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -20,6 +21,11 @@ router.get("/", async (req, res) => {
         res.status(500).json({ status: 'error', message: err.message });
     }
 });
+
+
+// Protect all routes after this middleware
+router.use(protect);
+router.use(restrictTo("admin"));
 
 // POST new skill (Admin only)
 router.post("/", async (req, res) => {

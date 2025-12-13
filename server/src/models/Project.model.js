@@ -10,6 +10,10 @@ const projectSchema = new mongoose.Schema({
   status: { type: String, enum: ["draft", "published", "archived"], default: "draft" },
   featured: { type: Boolean, default: false },
   order: { type: Number, default: 0 },
+  images: [{
+    url: { type: String, required: true },
+    publicId: { type: String, required: true }
+  }],
 
   // Case Study Fields
   problemStatement: { type: String },

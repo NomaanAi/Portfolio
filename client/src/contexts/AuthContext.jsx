@@ -92,10 +92,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout function
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    navigate('/login');
+  const logout = async () => {
+    try {
+        const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        await axios.get(`${API_BASE}/api/auth/logout`); // Clear server cookie
+    } catch (error) {
+        console.error("Logout error", error);
+    } finally {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('user');
+        setUser(null);
+        navigate('/login');
+    }
   };
 
   return (
