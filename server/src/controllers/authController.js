@@ -87,3 +87,10 @@ export const adminLogin = async (req, res) => {
     user
   });
 };
+
+export const getMe = (req, res) => {
+  res.status(200).json({
+    status: "success",
+    user: req.user
+  });
+};
