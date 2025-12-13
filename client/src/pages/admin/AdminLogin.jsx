@@ -7,6 +7,8 @@ import SEO from "../../components/SEO";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,28 +24,18 @@ export default function AdminLogin() {
     }
   }, [navigate]);
 
+  const { loginAdmin } = useAuth(); // Destructure loginAdmin
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    try {
-      const res = await axios.post(`${API_BASE}/api/auth/admin/login`, {
-        email,
-        password,
-      });
-
-      // Strict Admin Check
-      if (res.data.role !== "admin") {
-        setError("Access denied: Not an administrator.");
-        return;
-      }
-
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.data.user));
-      localStorage.setItem("role", res.data.role);
-
+    
+    const result = await loginAdmin(email, password);
+    
+    if (result.success) {
       navigate("/admin");
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+    } else {
+      setError(result.error);
     }
   };
 

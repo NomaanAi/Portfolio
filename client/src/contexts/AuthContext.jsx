@@ -107,6 +107,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Admin Login function
+  const loginAdmin = async (email, password) => {
+    try {
+      setError(null);
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_BASE}/api/auth/admin/login`, { email, password });
+      
+      const { token, role } = response.data;
+      const { user } = response.data.data;
+      
+      // Double check role
+      if (role !== 'admin') {
+        throw new Error("Not authorized as admin");
+      }
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+      
+      setUser({ ...user, role }); // Ensure user object has role
+      return { success: true };
+    } catch (err) {
+      const error = err.response?.data?.message || err.message || 'Admin login failed';
+      setError(error);
+      return { success: false, error };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -114,10 +141,11 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         login,
+        loginAdmin, // Export new function
         register,
         logout,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin',
+        isAdmin: user?.role === 'admin' || localStorage.getItem('role') === 'admin', // Fallback to localStorage for immediate check
       }}
     >
       {!loading && children}

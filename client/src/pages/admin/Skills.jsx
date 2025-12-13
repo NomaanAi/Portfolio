@@ -18,6 +18,7 @@ export default function Skills() {
   const [message, setMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   const authConfig = {
@@ -28,10 +29,15 @@ export default function Skills() {
 
   const loadSkills = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(`${API_BASE}/api/skills`);
-      setSkills(res.data);
+      // Correctly access nested data structure: { status: 'success', data: { skills: [...] } }
+      setSkills(res.data.data?.skills || []); 
     } catch (error) {
       console.error("Failed to load skills", error);
+      setMessage("Failed to load skills");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -198,7 +204,7 @@ export default function Skills() {
         <div className="space-y-4">
           <h2 className="text-lg font-bold">Existing Skills</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-             {skills.map((s) => (
+             {skills && skills.length > 0 && skills.map((s) => (
                 <motion.div
                   key={s._id}
                   layout

@@ -1,5 +1,5 @@
 
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LayoutDashboard, FolderKanban, Settings, LogOut, Code2, Globe, FileText, User } from "lucide-react";
 
@@ -69,14 +69,20 @@ function Sidebar() {
   );
 }
 
-export default function AdminLayout() {
-  const role = localStorage.getItem("role");
-  const token = localStorage.getItem("token");
+import { useAuth } from "../contexts/AuthContext";
 
-  if (!token || role !== "admin") {
-    // Force redirect if not admin
-    window.location.href = "/";
-    return null;
+export default function AdminLayout() {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+  const navigate = useNavigate(); // Should be imported
+
+  // Show nothing or a loader while checking auth status
+  if (loading) {
+    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-500">Loading admin...</div>;
+  }
+
+  // Redirect if not authenticated or not admin
+  if (!isAuthenticated || !isAdmin) {
+    return <Navigate to="/admin/login" replace />;
   }
 
   return (
