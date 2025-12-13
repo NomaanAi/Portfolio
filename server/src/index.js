@@ -64,7 +64,7 @@ app.use(
 
       // Check if origin is allowed
       const isAllowed = allowedOrigins.some(o => o && (o === origin || o.replace(/\/$/, '') === origin));
-      
+
       if (isAllowed || process.env.NODE_ENV === 'development') {
         callback(null, true);
       } else {
@@ -179,7 +179,7 @@ app.use(globalErrorHandler);
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 // Handle unhandled promise rejections
