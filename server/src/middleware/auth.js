@@ -3,6 +3,8 @@ import User from '../models/userModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
+import Admin from '../models/Admin.js';
+
 // Protect routes - user must be logged in
 export const protect = catchAsync(async (req, res, next) => {
   // 1) Get token from header or cookie
@@ -25,16 +27,23 @@ export const protect = catchAsync(async (req, res, next) => {
   // 2) Verify token
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
+  // 3) Check if user/admin still exists
+  let currentUser;
+
+  if (decoded.role === 'admin') {
+    currentUser = await Admin.findById(decoded.id);
+  } else {
+    currentUser = await User.findById(decoded.id);
+  }
+
   if (!currentUser) {
     return next(
       new AppError('The user belonging to this token no longer exists.', 401)
     );
   }
 
-  // 4) Check if user changed password after the token was issued
-  if (currentUser.changedPasswordAfter(decoded.iat)) {
+  // 4) Check if user changed password after the token was issued (Only for User model usually, Admin logic optional)
+  if (currentUser.changedPasswordAfter && currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
       new AppError('User recently changed password! Please log in again.', 401)
     );
@@ -42,6 +51,9 @@ export const protect = catchAsync(async (req, res, next) => {
 
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
+  // If it's an admin, ensure role is set on the object for middleware checks
+  if (decoded.role === 'admin') req.user.role = 'admin';
+
   res.locals.user = currentUser;
   next();
 });
@@ -58,6 +70,13 @@ export const restrictTo = (...roles) => {
   };
 };
 
+export const adminOnly = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Access denied: Admin only" });
+  }
+  next();
+};
+
 // Check if user is logged in, only for rendered pages, no errors
 export const isLoggedIn = catchAsync(async (req, res, next) => {
   if (req.cookies.jwt) {
@@ -66,13 +85,14 @@ export const isLoggedIn = catchAsync(async (req, res, next) => {
       const decoded = await jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
 
       // 2) Check if user still exists
-      const currentUser = await User.findById(decoded.id);
-      if (!currentUser) {
-        return next();
+      let currentUser;
+      if (decoded.role === 'admin') {
+        currentUser = await Admin.findById(decoded.id);
+      } else {
+        currentUser = await User.findById(decoded.id);
       }
 
-      // 3) Check if user changed password after the token was issued
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
+      if (!currentUser) {
         return next();
       }
 

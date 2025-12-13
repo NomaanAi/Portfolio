@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import SEO from "../../components/SEO";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -16,24 +17,42 @@ export default function Login() {
   const location = useLocation();
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/admin");
+    // Check if already logged in
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (token) {
+      if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     }
   }, [navigate]);
+
+  const { login } = useAuth();
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    try {
-      const res = await axios.post(`${API_BASE}/api/auth/login`, {
-        email,
-        password,
-      });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      navigate("/admin");
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+    const result = await login(email, password);
+    
+    if (result.success) {
+       // Strict Separation: Deny Admin on User Login
+       if (result.role === "admin") {
+         localStorage.clear(); // Or logout from context?
+         // We should use logout() but we are in onSubmit. 
+         // Let's just manually clear and not navigate.
+         // Better yet, logout() from context if available. 
+         // But for now, returning error is key.
+         // Actually, context breaks if we have admin role but access user routes? 
+         // The requirement is "Deny Admin on User Login".
+         setError("Please use the Admin Portal to log in.");
+         return;
+       }
+       navigate("/");
+    } else {
+       setError(result.error);
     }
   };
 
@@ -44,20 +63,20 @@ export default function Login() {
       exit={{ opacity: 0, scale: 0.95 }}
       className="flex flex-col items-center justify-center min-h-[60vh] px-4"
     >
-      <SEO title="Login | Noman.dev" description="Admin login for Noman.dev" />
+      <SEO title="Login | Noman.dev" description="Login to Noman.dev" />
       <div className="w-full max-w-md border border-slate-800 rounded-2xl p-8 bg-slate-900/40 backdrop-blur-xl shadow-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent to-purple-400">Welcome Back</h1>
-          <p className="text-slate-400 text-sm mt-2">Enter your credentials to access the admin panel.</p>
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent to-purple-400">Sign In to Your Account</h1>
+          <p className="text-slate-400 text-sm mt-2">Enter your credentials to continue.</p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">Email</label>
             <input
               type="email"
               className="w-full px-4 py-2.5 rounded-xl bg-slate-950/50 border border-slate-700 text-sm focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all outline-none"
-              placeholder="admin@example.com"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

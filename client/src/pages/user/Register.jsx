@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../../contexts/AuthContext";
 import SEO from "../../components/SEO";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -14,20 +15,16 @@ export default function Register() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const { register } = useAuth();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    try {
-      const res = await axios.post(`${API_BASE}/api/auth/register`, {
-        name,
-        email,
-        password,
-      });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      navigate("/admin"); // Redirect to dashboard or home? Admin/Dashboard is fine for now as "User Profile"
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+    const result = await register(name, email, password);
+    if (result.success) {
+      navigate("/"); // Redirect to home
+    } else {
+      setError(result.error);
     }
   };
 

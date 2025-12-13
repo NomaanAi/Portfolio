@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -13,11 +14,15 @@ import compression from 'compression';
 import { connectDB } from './config/db.js';
 import globalErrorHandler from './controllers/errorController.js';
 import AppError from './utils/appError.js';
+import seedAdmin from './utils/seedAdmin.js';
 
 // Import routes
 import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
+import skillsRouter from './routes/skills.js';
+import siteSettingsRouter from './routes/siteSettings.js';
+import resumeRouter from './routes/resume.js';
 
 // Load environment variables
 dotenv.config({ path: '.env' });
@@ -31,7 +36,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Connect to MongoDB
-connectDB();
+// Connect to MongoDB
+connectDB().then(() => {
+  seedAdmin();
+});
 
 // 1) GLOBAL MIDDLEWARES
 
@@ -103,10 +111,16 @@ app.get('/', (req, res) => {
   });
 });
 
+import uploadRouter from './routes/uploadRoutes.js';
+
 // API routes
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/projects', projectRouter);
-app.use('/api/v1/contact', contactRouter);
+app.use('/api/auth', authRouter); // standardized path
+app.use('/api/projects', projectRouter);
+app.use('/api/contact', contactRouter);
+app.use('/api/skills', skillsRouter);
+app.use('/api/site-settings', siteSettingsRouter);
+app.use('/api/resume', resumeRouter);
+app.use('/api/upload', uploadRouter);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -115,12 +129,13 @@ if (process.env.NODE_ENV === 'production') {
 
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  });
 }
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-  
+
   res.status(200).json({
     status: dbStatus === 'connected' ? 'ok' : 'error',
     db: dbStatus,
@@ -146,7 +161,7 @@ const server = app.listen(PORT, () => {
 process.on('unhandledRejection', (err) => {
   console.error('UNHANDLED REJECTION! 💥 Shutting down...');
   console.error(err.name, err.message);
-  
+
   server.close(() => {
     process.exit(1);
   });
@@ -156,21 +171,10 @@ process.on('unhandledRejection', (err) => {
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   console.error(err.name, err.message);
-  
+
   server.close(() => {
     process.exit(1);
   });
 });
 
 export default app;
-
-app.use("/api/auth", authRouter);
-app.use("/api/projects", projectsRouter);
-app.use("/api/resume", resumeRouter);
-app.use("/api/contact", contactRouter);
-app.use("/api/skills", skillsRouter);
-app.use("/api/site-settings", siteSettingsRouter);
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});

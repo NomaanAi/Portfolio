@@ -44,22 +44,26 @@ export default function Projects() {
   const loadProjects = async () => {
     try {
       // Use admin endpoint to get drafts too
-      const res = await axios.get(`${API_BASE}/api/projects/admin/all`, authConfig);
-      setProjects(res.data);
+      const res = await axios.get(`${API_BASE}/api/projects`, authConfig);
+      // Backend returns { status: 'success', data: { projects: [] } }
+      setProjects(res.data.data.projects);
     } catch (error) {
       console.error("Failed to load projects", error);
       // Fallback
       if (error.response?.status === 404) {
-         try {
-             const res = await axios.get(`${API_BASE}/api/projects`);
-             setProjects(res.data);
-         } catch(e) {}
+         // Already tried the main endpoint.
       }
     }
   };
 
   useEffect(() => {
-    loadProjects();
+    let isMounted = true;
+    const fetchIt = async () => {
+      await loadProjects();
+    };
+    if (isMounted) fetchIt();
+    return () => { isMounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const resetForm = () => {

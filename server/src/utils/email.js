@@ -17,8 +17,17 @@ class Email {
 
   // Create a transporter
   newTransport() {
+    if (process.env.EMAIL_SERVICE === 'gmail') {
+      return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+    }
+
     if (process.env.NODE_ENV === 'production') {
-      // Use SendGrid for production
       return nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
@@ -28,7 +37,6 @@ class Email {
       });
     }
 
-    // Use Mailtrap for development
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,

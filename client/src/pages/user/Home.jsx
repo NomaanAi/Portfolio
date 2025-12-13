@@ -59,39 +59,73 @@ export default function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+    
+    // Resize listener to force re-render for slider logic
+    const handleResize = () => {
+        // Just triggering a re-render if needed, or we can use a state for window width
+        // But for now, we leave it as React state update handles re-render
+    };
+    window.addEventListener('resize', handleResize);
+
     const fetchData = async () => {
       try {
-        const [projectsRes, skillsRes, settingsRes] = await Promise.all([
+        const results = await Promise.allSettled([
            axios.get(`${API_BASE}/api/projects`),
            axios.get(`${API_BASE}/api/skills`),
            axios.get(`${API_BASE}/api/site-settings`)
         ]);
-        // Filter featured or respect order if not handled by backend query (backend handles filtering published, but maybe we want featured only on home)
-        // Requirement 3: Homepage shows featured + published projects only.
-        const featuredProjects = projectsRes.data.filter(p => p.featured);
-        setProjects(featuredProjects.length > 0 ? featuredProjects : projectsRes.data.slice(0,4)); // Fallback to latest 4 if no featured, or strict?
-        // Let's strict: featured only. If none, maybe empty? Or fallback. Plan said "featured + published".
-        // Backend `GET /api/projects` returns "published".
         
-        setSkills(skillsRes.data);
-        setGroupedSkills(groupSkills(skillsRes.data));
-        setSiteSettings(settingsRes.data);
+        if (!isMounted) return;
+
+        // Handle Projects
+        if (results[0].status === 'fulfilled') {
+            const projectsRes = results[0].value;
+            const allProjects = projectsRes.data?.data?.projects || [];
+            const featuredProjects = allProjects.filter(p => p.featured);
+            setProjects(featuredProjects.length > 0 ? featuredProjects : allProjects.slice(0,4));
+        } else {
+            console.error('Projects fetch failed:', results[0].reason);
+        }
+
+        // Handle Skills
+        if (results[1].status === 'fulfilled') {
+            const skillsRes = results[1].value;
+            const fetchedSkills = skillsRes.data?.data?.skills || [];
+            setSkills(fetchedSkills);
+            setGroupedSkills(groupSkills(fetchedSkills));
+        } else {
+             console.error('Skills fetch failed:', results[1].reason);
+        }
+
+        // Handle Settings
+        if (results[2].status === 'fulfilled') {
+             const settingsRes = results[2].value;
+             setSiteSettings(settingsRes.data?.data?.siteSettings || {});
+        } else {
+             console.error('Settings fetch failed:', results[2].reason);
+             // If settings fail, we generally want to show something, maybe empty object?
+             setSiteSettings({});
+        }
+
+        // Only set Global Error if EVERYTHING failed
+        if (results.every(r => r.status === 'rejected')) {
+             setError('Failed to load content. Please check your connection.');
+        }
+
       } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to load content. Please try again later.');
+        if (isMounted) {
+          console.error('Error fetching data:', err);
+          setError('Failed to load content. Please try again later.');
+        }
       }
     };
     fetchData();
+    return () => { 
+        isMounted = false; 
+        window.removeEventListener('resize', handleResize);
+    };
   }, []);
-
-  // Loading state
-  if (!siteSettings) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -107,6 +141,15 @@ export default function Home() {
             Try Again
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (!siteSettings) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
       </div>
     );
   }

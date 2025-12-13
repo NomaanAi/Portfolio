@@ -63,7 +63,7 @@ function Navbar() {
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
               <Link 
-                to="/dashboard" 
+                to="/profile" 
                 className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-accent transition-colors"
               >
                 <User size={16} />
@@ -72,19 +72,17 @@ function Navbar() {
               <button 
                 onClick={handleLogout}
                 className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors"
+                title="Logout"
               >
                 <LogOut size={16} />
-                Logout
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-4">
               <Link to="/login" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-accent transition-colors">
-                <span className="flex items-center gap-1">
-                  <LogIn size={16} /> Login
-                </span>
+                Login
               </Link>
-              <Link to="/register" className="text-sm font-medium bg-accent text-white px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
+              <Link to="/register" className="text-sm font-medium bg-accent text-white px-5 py-2 rounded-full hover:opacity-90 transition-all shadow-lg shadow-accent/20">
                 Join
               </Link>
             </div>
@@ -108,6 +106,9 @@ function Navbar() {
           >
             <div className="flex flex-col p-6 gap-4">
               <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-slate-900 dark:text-slate-100 hover:text-accent">Home</Link>
+              <Link to="/about" onClick={() => setIsMenuOpen(false)} className="text-slate-900 dark:text-slate-100 hover:text-accent">About</Link>
+              <Link to="/projects" onClick={() => setIsMenuOpen(false)} className="text-slate-900 dark:text-slate-100 hover:text-accent">Projects</Link>
+              <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="text-slate-900 dark:text-slate-100 hover:text-accent">Contact</Link>
 
               <button
                 onClick={() => setDark(!dark)}
@@ -118,7 +119,7 @@ function Navbar() {
               
                {isAuthenticated ? (
                 <>
-                  <Link to="/dashboard" className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-accent">
+                  <Link to="/profile" className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-accent">
                     <User size={16} />
                     {user?.name || 'Profile'}
                   </Link>
@@ -132,11 +133,11 @@ function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-accent">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-accent">
                     <LogIn size={16} />
                     Login
                   </Link>
-                  <Link to="/register" className="text-accent font-medium">Join Noman.dev</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="text-accent font-medium">Join Noman.dev</Link>
                 </>
                )}
             </div>

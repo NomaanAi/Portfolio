@@ -6,19 +6,16 @@ const router = express.Router();
 // Authentication routes
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.post('/admin/login', authController.adminLogin);
 router.get('/logout', authController.logout);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
 
 // Get current user
-router.get('/me', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: req.user,
-    },
-  });
-});
+// Get current user
+router.get('/me', authController.protect, authController.getProfile);
+router.patch('/updateMe', authController.protect, authController.updateProfile);
+router.patch('/updateMyPassword', authController.protect, authController.updatePassword);
 
 export default router;

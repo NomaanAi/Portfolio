@@ -19,6 +19,19 @@ import AppError from './utils/appError.js';
 import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
+import skillsRouter from './routes/skills.js';
+import siteSettingsRouter from './routes/siteSettings.js';
+import resumeRouter from './routes/resume.js';
+
+// ... (code continues)
+
+// API routes
+app.use('/api/auth', authRouter);
+app.use('/api/projects', projectRouter);
+app.use('/api/contact', contactRouter);
+app.use('/api/skills', skillsRouter);
+app.use('/api/site-settings', siteSettingsRouter);
+app.use('/api/resume', resumeRouter);
 
 // Load environment variables
 dotenv.config({ path: '.env' });
@@ -105,14 +118,14 @@ app.get('/', (req, res) => {
 });
 
 // API routes
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/projects', projectRouter);
-app.use('/api/v1/contact', contactRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/projects', projectRouter);
+app.use('/api/contact', contactRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-  
+
   res.status(200).json({
     status: dbStatus === 'connected' ? 'ok' : 'error',
     db: dbStatus,
@@ -138,7 +151,7 @@ const server = app.listen(PORT, () => {
 process.on('unhandledRejection', (err) => {
   console.error('UNHANDLED REJECTION! 💥 Shutting down...');
   console.error(err.name, err.message);
-  
+
   server.close(() => {
     process.exit(1);
   });
@@ -148,7 +161,7 @@ process.on('unhandledRejection', (err) => {
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   console.error(err.name, err.message);
-  
+
   server.close(() => {
     process.exit(1);
   });

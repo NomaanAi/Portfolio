@@ -20,14 +20,17 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        const response = await axios.get('/api/auth/me', {
+        const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const response = await axios.get(`${API_BASE}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        setUser(response.data.user);
+        setUser(response.data.data.user);
+        localStorage.setItem('role', response.data.data.user.role); // Sync role
       } catch (err) {
         console.error('Auth check failed:', err);
         localStorage.removeItem('token');
+        localStorage.removeItem('role');
       } finally {
         setLoading(false);
       }
@@ -40,12 +43,20 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user } = response.data;
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
+      const { token } = response.data;
+      const { user } = response.data.data;
       
       localStorage.setItem('token', token);
+      localStorage.setItem('role', user.role); // Persist role
+      // Sync user to localStorage for persistence across refreshes if needed, 
+      // but Context usually relies on checkAuth. 
+      // However, Login.jsx was setting "user" in localStorage. 
+      // We should probably allow checkAuth to hydrate it, or set it here too if we rely on it.
+      // But let's stick to standard Context pattern: update state.
       setUser(user);
-      return { success: true };
+      return { success: true, role: user.role };
     } catch (err) {
       const error = err.response?.data?.message || 'Login failed';
       setError(error);
@@ -57,14 +68,20 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       setError(null);
-      const response = await axios.post('/api/auth/register', {
+      // Use full URL or proxy. Assuming proxy is set or we should use VITE_API_BASE_URL
+      // Best to align with pages.
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_BASE}/api/auth/signup`, {
         name,
         email,
         password,
+        passwordConfirm: password
       });
       
-      const { token, user } = response.data;
+      const { token } = response.data;
+      const { user } = response.data.data;
       localStorage.setItem('token', token);
+      localStorage.setItem('role', user.role); // Persist role
       setUser(user);
       return { success: true };
     } catch (err) {

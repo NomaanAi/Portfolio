@@ -70,6 +70,15 @@ function Sidebar() {
 }
 
 export default function AdminLayout() {
+  const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
+
+  if (!token || role !== "admin") {
+    // Force redirect if not admin
+    window.location.href = "/";
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/30">
       <Sidebar />

@@ -27,7 +27,7 @@ export default function Projects() {
   useEffect(() => {
     axios
       .get(`${API_BASE}/api/projects`)
-      .then((res) => setProjects(res.data))
+      .then((res) => setProjects(res.data.data.projects))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
