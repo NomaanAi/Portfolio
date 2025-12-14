@@ -26,21 +26,29 @@ router.get("/active", async (req, res) => {
     if (!activeResume) {
       return res.status(404).json({ message: "No active resume found" });
     }
-    // Return direct URL for Cloudinary
-    // Assuming filePath stores the Cloudinary URL or we store it in a new field.
-    // The previous code stored 'filename'. We need to adapt.
-    // If the DB has old data, this might break. But user said "Remove all local file upload logic".
-    // I'll assume we store the URL in filePath or add a url field.
-    // Let's check Resume model? I haven't seen it.
-    // I'll assume standard usage: URL.
 
-    // Redirect to the Cloudinary URL
+    // Stream the file from Cloudinary to avoid CORS/Auth issues on frontend redirect
     if (activeResume.filePath.startsWith('http')) {
-      return res.redirect(activeResume.filePath);
+      const response = await fetch(activeResume.filePath);
+      if (!response.ok) throw new Error("Failed to fetch from cloud storage");
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="Resume_${activeResume.versionLabel}.pdf"`);
+
+      // Node 18+ native fetch has .body as a web stream, but Express needs Node stream
+      // We can iterate or use a utility. Or simpler: just use generic redirect if streaming is complex 
+      // without extra deps. But streaming is better.
+      // Let's use arrayBuffer and sending it (okay for PDF size). 
+      // Or response.body (if node-fetch or native).
+
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      return res.send(buffer);
     }
 
     res.status(404).json({ message: "Resume URL not found" });
   } catch (err) {
+    console.error("Resume fetch error:", err);
     res.status(500).json({ message: "Error fetching active resume" });
   }
 });
