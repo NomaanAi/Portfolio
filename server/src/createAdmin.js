@@ -1,5 +1,6 @@
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -16,7 +17,7 @@ const createAdmin = async () => {
         if (!process.env.MONGO_URI) {
             throw new Error('MONGO_URI is missing');
         }
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI, { dbName: 'portfolio' });
         console.log('✅ DB Connected');
 
         const adminEmail = 'noman.admin@dev';
@@ -26,11 +27,14 @@ const createAdmin = async () => {
         await User.deleteOne({ email: adminEmail });
         console.log('🗑️  Existing admin deleted (if any)');
 
+        // Hash password
+        const hashedPassword = await bcrypt.hash(adminPassword, 12);
+
         // Create Fresh
         const admin = await User.create({
             name: 'Admin User',
             email: adminEmail,
-            password: adminPassword,
+            password: hashedPassword,
             role: 'admin'
         });
 
