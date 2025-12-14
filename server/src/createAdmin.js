@@ -19,8 +19,8 @@ const createAdmin = async () => {
         await mongoose.connect(process.env.MONGO_URI);
         console.log('✅ DB Connected');
 
-        const adminEmail = 'admin@noman.dev';
-        const adminPassword = 'admin123'; // Simpler password
+        const adminEmail = 'noman.admin@dev';
+        const adminPassword = 'admin.noman';
 
         // Force Delete
         await User.deleteOne({ email: adminEmail });
