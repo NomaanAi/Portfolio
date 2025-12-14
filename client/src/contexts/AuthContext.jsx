@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import { loginUser, registerUser, loginAdmin, getMe } from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -8,126 +7,73 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  // Check if user is logged in on initial load
+  // Check auth on load
   useEffect(() => {
-    const checkAuth = async () => {
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        // Verify token with backend
-        const response = await api.get('/api/auth/me');
-        // Assuming /me endpoint also follows new structure, e.g. { status: 'success', user: ... }
-        // If not, we might need to check the /me controller. 
-        // Let's assume standard response for now or I should check /me route.
-        // Wait, I didn't verify /me controller. Let's look at it next step or assume safe default.
-        // Usually /me in this project was returning { data: { user } }. 
-        // I should probably fix /me too if I am standardizing. But for now let's be flexible.
-        const userData = response.data.user || response.data.data?.user;
-
+        const userData = await getMe();
         setUser(userData);
-        localStorage.setItem('role', userData.role);
       } catch (err) {
-        console.warn('Auth check failed - clearing session:', err.message);
-        // Only clear if explicitly unauthorized or critical failure
+        console.error("Auth initialization failed:", err);
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        setUser(null);
       } finally {
         setLoading(false);
       }
     };
-
-    checkAuth();
+    initAuth();
   }, []);
 
-  // Login function
   const login = async (email, password) => {
     try {
       setError(null);
-      const response = await api.post('/api/auth/login', { email, password });
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role);
-      setUser(user);
-      return { success: true, role: user.role };
+      const data = await loginUser(email, password);
+      setUser(data.user);
+      return { success: true };
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Login failed';
-      setError(errorMsg);
-      return { success: false, error: errorMsg };
+      setError(err.message);
+      return { success: false, error: err.message };
     }
   };
 
-  // Register function
   const register = async (name, email, password) => {
     try {
       setError(null);
-      const response = await api.post('/api/auth/signup', {
-        name,
-        email,
-        password,
-        passwordConfirm: password
-      });
-      
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role); 
-      setUser(user);
+      await registerUser(name, email, password);
       return { success: true };
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Registration failed';
-      setError(errorMsg);
-      return { success: false, error: errorMsg };
+      setError(err.message);
+      return { success: false, error: err.message };
     }
   };
 
-  // Logout function
-  const logout = async () => {
-    try {
-        await api.get('/api/auth/logout'); 
-    } catch (error) {
-        console.warn("Logout endpoint error (ignoring):", error);
-    } finally {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        setUser(null);
-        navigate('/login');
-    }
-  };
-
-  // Admin Login function
-  const loginAdmin = async (email, password) => {
+  const adminLoginAuth = async (email, password) => {
     try {
       setError(null);
-      const response = await api.post('/api/auth/admin/login', { email, password });
-      
-      const { token, user } = response.data;
-      const role = user.role;
-      
-      if (role !== 'admin') {
-        throw new Error("Not authorized as admin");
-      }
-
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
-      
-      setUser({ ...user, role }); 
+      const data = await loginAdmin(email, password);
+      setUser(data.user);
       return { success: true };
     } catch (err) {
-      const errorMsg = err.response?.data?.message || err.message || 'Admin login failed';
-      setError(errorMsg);
-      return { success: false, error: errorMsg };
+      setError(err.message);
+      return { success: false, error: err.message };
     }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    setUser(null);
+    window.location.href = '/login';
   };
 
   const isAuthenticated = !!user;
-  const isAdmin = user?.role === 'admin' || localStorage.getItem('role') === 'admin';
+  const isAdmin = user?.role === 'admin';
 
   return (
     <AuthContext.Provider
@@ -136,11 +82,11 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         login,
-        loginAdmin,
         register,
+        loginAdmin: adminLoginAuth, // Mapping to existing name if used by UI
         logout,
         isAuthenticated,
-        isAdmin,
+        isAdmin
       }}
     >
       {children}

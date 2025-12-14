@@ -40,13 +40,7 @@ export default function Login() {
     if (result.success) {
        // Strict Separation: Deny Admin on User Login
        if (result.role === "admin") {
-         localStorage.clear(); // Or logout from context?
-         // We should use logout() but we are in onSubmit. 
-         // Let's just manually clear and not navigate.
-         // Better yet, logout() from context if available. 
-         // But for now, returning error is key.
-         // Actually, context breaks if we have admin role but access user routes? 
-         // The requirement is "Deny Admin on User Login".
+         // Strict Separation: Deny Admin on User Login
          setError("Please use the Admin Portal to log in.");
          return;
        }
