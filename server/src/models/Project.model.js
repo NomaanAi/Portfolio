@@ -1,33 +1,19 @@
-
 import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String, required: true },
-  techStack: [{ type: String }],
-  githubUrl: { type: String },
-  liveUrl: { type: String },
-  status: { type: String, enum: ["draft", "published", "archived"], default: "draft" },
-  featured: { type: Boolean, default: false },
-  order: { type: Number, default: 0 },
-  images: [{
-    url: { type: String, required: true },
-    publicId: { type: String, required: true }
-  }],
-
-  // Case Study Fields
-  problemStatement: { type: String },
-  whyThisProject: { type: String },
-  solutionOverview: { type: String },
-  systemDesign: { type: String },
-  architectureDiagramUrl: { type: String },
-  techDecisions: { type: String }, // Storing as rich text/markdown string
-  workflow: { type: String },
+  tagline: { type: String }, // Short one-liner
+  desc: { type: String, required: true },
+  problem: { type: String },
   challenges: { type: String },
-  outcomes: { type: String },
-  futureImprovements: { type: String },
-
-  createdAt: { type: Date, default: Date.now }
-});
+  solution: { type: String },
+  architecture: { type: String },
+  outcome: { type: String },
+  stack: [{ type: String }],
+  liveUrl: { type: String },
+  githubUrl: { type: String },
+  featured: { type: Boolean, default: false },
+  order: { type: Number, default: 0 }
+}, { timestamps: true });
 
 export default mongoose.model("Project", projectSchema);

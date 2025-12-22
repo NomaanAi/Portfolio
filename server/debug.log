@@ -5,3 +5,4 @@ MongoDB Connected: ac-qd9zt2d-shard-00-01.km2cd0b.mongodb.net
 [Admin Login Attempt] Email: noman.admin@dev
 [Admin Login] User not found
 [0mPOST /api/auth/admin/login [33m401[0m 78.156 ms - 49[0m
+^C

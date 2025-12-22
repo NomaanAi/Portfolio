@@ -20,9 +20,11 @@ import seedAdmin from './utils/seedAdmin.js';
 import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
-import skillsRouter from './routes/skills.js';
-import siteSettingsRouter from './routes/siteSettings.js';
-import resumeRouter from './routes/resume.js';
+// Removed old imports, they are re-imported below closer to usage if sticking to previous pattern,
+// but better to keep imports at top.
+import skillRouter from './routes/skillRoutes.js';
+import experienceRouter from './routes/experienceRoutes.js';
+import uploadRouter from './routes/uploadRoutes.js';
 
 // Load environment variables
 dotenv.config({ path: '.env' });
@@ -138,15 +140,16 @@ app.get('/', (req, res) => {
   });
 });
 
-import uploadRouter from './routes/uploadRoutes.js';
+
+
+
 
 // API routes
-app.use('/api/auth', authRouter); // standardized path
+app.use('/api/auth', authRouter);
 app.use('/api/projects', projectRouter);
+app.use('/api/skills', skillRouter);
+app.use('/api/experience', experienceRouter);
 app.use('/api/contact', contactRouter);
-app.use('/api/skills', skillsRouter);
-app.use('/api/site-settings', siteSettingsRouter);
-app.use('/api/resume', resumeRouter);
 app.use('/api/upload', uploadRouter);
 
 // Serve static assets in production

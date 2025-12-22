@@ -1,34 +1,14 @@
-import express from 'express';
-import * as projectController from '../controllers/projectController.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
-import { uploadMultipleImages } from '../middleware/upload.js';
+import express from "express";
+import { getProjects, createProject, updateProject, deleteProject } from "../controllers/projectController.js";
+import { protect, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Public routes
-router.get('/', projectController.getAllProjects);
-router.get('/:id', projectController.getProject);
+router.get("/", getProjects); // Public
 
-// Protected routes (require authentication)
-router.use(requireAuth);
-
-// Admin-only routes
-router.use(requireAdmin);
-
-// Project CRUD operations
-router.post('/', projectController.createProject);
-router.patch('/:id', projectController.updateProject);
-router.delete('/:id', projectController.deleteProject);
-
-// Image upload routes
-router.post(
-  '/:id/images',
-  uploadMultipleImages,
-  projectController.uploadProjectImages
-);
-router.delete(
-  '/:id/images/:imageId',
-  projectController.deleteProjectImage
-);
+// Admin Routes
+router.post("/", protect, requireAdmin, createProject);
+router.patch("/:id", protect, requireAdmin, updateProject);
+router.delete("/:id", protect, requireAdmin, deleteProject);
 
 export default router;

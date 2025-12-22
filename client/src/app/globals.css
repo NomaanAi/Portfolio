@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  /* Light Mode (Default) */
+  --color-background: #f8fafc; /* Slate-50 */
+  --color-foreground: #0f172a; /* Slate-900 */
+  
+  --color-accent-primary: #020617; /* Slate-950 */
+  --color-accent-secondary: #475569; /* Slate-600 */
+  
+  --color-surface: rgba(0, 0, 0, 0.04);
+  --color-surface-hover: rgba(0, 0, 0, 0.08);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui; 
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  --cursor-size: 20px;
+}
+
+.dark {
+  /* Dark Mode */
+  --color-background: #050505; /* Deep Neutral Black */
+  --color-foreground: #f3f4f6; /* Slate-100 */
+  
+  --color-accent-primary: #ffffff; 
+  --color-accent-secondary: #94a3b8; /* Slate-400 */
+  
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-surface-hover: rgba(255, 255, 255, 0.1);
+}
+
+@utility container-wide {
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  cursor: none; /* Hiding default cursor for custom implementation */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Selection Style */
+::selection {
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+}
+
+/* Scrollbar Clean Up */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-secondary);
+  border-radius: 3px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.03em; /* Tight tracking for confident headers */
+}
+
+/* Utilities for Layout */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
