@@ -1,11 +1,13 @@
 "use client";
 
 import ProjectCard from "./ProjectCard";
+// importing DataProject only
+import type { Project as DataProject } from "@/data/projects";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { motion } from "framer-motion";
 
-interface Project {
+interface APIProject {
   _id: string;
   title: string;
   desc: string;
@@ -20,7 +22,7 @@ interface ProjectsSectionProps {
 }
 
 export default function ProjectsSection({ limit }: ProjectsSectionProps) {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<APIProject[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -94,10 +96,11 @@ export default function ProjectsSection({ limit }: ProjectsSectionProps) {
                 index={index} 
                 project={{
                     ...project,
+                    id: project._id,
                     description: project.desc,
                     techStack: project.stack,
                     demoUrl: project.liveUrl,
-                    status: project.status || "Completed"
+                    status: (project.status as DataProject['status']) || "Completed"
                 }} 
             />
           ))}

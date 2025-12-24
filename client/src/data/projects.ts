@@ -5,7 +5,7 @@ export interface Project {
   techStack: string[];
   githubUrl?: string;
   demoUrl?: string;
-  status: "Completed" | "In Progress" | "Archived";
+  status: "Completed" | "In Progress" | "Archived" | "Building";
 }
 
 // REAL DATA ONLY. Leave empty if no projects are ready for showcase.
