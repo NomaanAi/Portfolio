@@ -21,7 +21,7 @@ export default function PageLoader({ isLoading, minDuration = 600 }: PageLoaderP
             // but we handle the fade out animation delay here.
             
             // Start fade out
-            setIsVisible(false);
+            setTimeout(() => setIsVisible(false), 0);
             
             // Unmount after transition
             timeoutId = setTimeout(() => {

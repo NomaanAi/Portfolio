@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { Plus, Trash2, Edit2, Check, X, Star, Github, Globe, ChevronDown } from "lucide-react";
@@ -5,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { CommonButton } from "@/components/common/CommonButton";
 import { CommonInput } from "@/components/common/CommonInput";
 import { CommonLabel } from "@/components/common/CommonLabel";
-import { CommonTextarea } from "@/components/common/CommonTextarea";
+import { CommonTextarea } from "@/components/common/CommonTextArea";
 import { CommonSelect } from "@/components/common/CommonSelect";
 import { CommonCard, CommonCardContent } from "@/components/common/CommonCard";
 import { CommonAccordionItem } from "@/components/common/CommonAccordion";
@@ -291,14 +293,12 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                         }
                     >
                          <div className="p-6 pt-0 grid grid-cols-1 gap-6">
-                             {['problem', 'challenges', 'solution', 'architecture', 'outcome'].map((field) => (
+                            {((['problem', 'challenges', 'solution', 'architecture', 'outcome'] as const)).map((field) => (
                                 <div key={field} className="space-y-2">
                                     <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">{field}</CommonLabel>
                                     <CommonTextarea 
                                         className="min-h-[100px] text-sm leading-relaxed" 
-                                        // @ts-ignore
                                         value={data[field] || ""} 
-                                        // @ts-ignore
                                         onChange={e => setData({...data, [field]: e.target.value})} 
                                         placeholder={`Describe the ${field}...`}
                                     />
@@ -326,8 +326,7 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                         <CommonSelect 
                             className="w-[140px]"
                             value={data.status || "Completed"}
-                            // @ts-ignore
-                            onChange={e => setData({...data, status: e.target.value})}
+                            onChange={e => setData({...data, status: e.target.value as "Completed" | "In Progress" | "Building"})}
                         >
                             <option value="Completed">Completed</option>
                             <option value="In Progress">In Progress</option>

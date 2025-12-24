@@ -6,7 +6,7 @@ import * as THREE from "three";
 
 interface LoaderSceneProps {
     themeValue: string;
-    opacity: number;
+    opacity: React.MutableRefObject<number> | number;
 }
 
 export default function LoaderScene({ themeValue, opacity }: LoaderSceneProps) {
@@ -23,7 +23,7 @@ export default function LoaderScene({ themeValue, opacity }: LoaderSceneProps) {
     const edgeColor = isDark ? new THREE.Color("#64748b") : new THREE.Color("#cbd5e1");
 
     // Initial Data (Seed)
-    const { positions } = useMemo(() => {
+    const { positions } = useMemo(() => { // eslint-disable-line react-hooks/exhaustive-deps
         const pos = new Float32Array(COUNT * 3);
         for (let i = 0; i < COUNT; i++) {
             // Centered cluster
@@ -46,7 +46,22 @@ export default function LoaderScene({ themeValue, opacity }: LoaderSceneProps) {
 
     useFrame((state) => {
         if (!meshRef.current || !linesRef.current) return;
-        if (opacity <= 0.01) return; // Opt out if invisible
+        
+        const currentOpacity = typeof opacity === 'number' ? opacity : opacity.current;
+        if (currentOpacity <= 0.01) {
+             meshRef.current.visible = false;
+             linesRef.current.visible = false;
+             return;
+        }
+        
+        meshRef.current.visible = true;
+        linesRef.current.visible = true;
+        
+        // Update opacity manually for performance
+        // @ts-ignore
+        if (meshRef.current.material) meshRef.current.material.opacity = currentOpacity;
+        // @ts-ignore
+        if (linesRef.current.material) linesRef.current.material.opacity = 0.3 * currentOpacity;
 
         const time = state.clock.getElapsedTime();
         const linePositions = linesRef.current.geometry.attributes.position.array as Float32Array;
@@ -97,21 +112,21 @@ export default function LoaderScene({ themeValue, opacity }: LoaderSceneProps) {
 
     return (
         <group>
-            <instancedMesh ref={meshRef} args={[undefined, undefined, COUNT]} visible={opacity > 0}>
+            <instancedMesh ref={meshRef} args={[undefined, undefined, COUNT]} visible={true}>
                 <sphereGeometry args={[0.08, 16, 16]} />
                 <meshStandardMaterial 
                     color={nodeColor}
                     emissive={nodeColor}
                     emissiveIntensity={(isDark ? 0.5 : 0)}
                     transparent
-                    opacity={opacity}
+                    opacity={1} // Controlled by useFrame
                 />
             </instancedMesh>
-            <lineSegments ref={linesRef} geometry={lineGeo} visible={opacity > 0}>
+            <lineSegments ref={linesRef} geometry={lineGeo} visible={true}>
                 <lineBasicMaterial 
                     color={edgeColor} 
                     transparent 
-                    opacity={0.3 * opacity} 
+                    opacity={0.3} // Controlled by useFrame
                     depthWrite={false} 
                 />
             </lineSegments>

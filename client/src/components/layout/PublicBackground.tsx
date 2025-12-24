@@ -66,42 +66,34 @@ function TransitionOrchestrator({ theme, pathname }: { theme: string, pathname: 
              <directionalLight position={[10, 10, 5]} intensity={1} color={theme === 'dark' ? "#4f46e5" : "#ffffff"} />
 
              {/* 1. Loader Layer (Always present until faded out) */}
-             <LoaderScene themeValue={theme} opacity={loaderOpacity.current} />
+             <LoaderScene themeValue={theme} opacity={loaderOpacity} />
 
              {/* 2. Main Content (Wrapped in Suspense) */}
-             {/* We use React.Suspense to ensure assets load before showing */}
-             {/* But visuals are controlled by opacity, so it doesn't pop */}
-             <Suspense fallback={null}>
-                  <group visible={mainOpacity.current > 0.01}>
-                        <BackgroundMesh themeValue={theme} visible={false} opacityScale={0} />
-                        {/* Pass current calculated opacity to Main Network */}
-                        {/* Note: HeroNetwork needs to multiply this with its own internal opacity logic */}
-                        {/* Since HeroNetwork takes opacityScale, we can pass our mainOpacity there? */}
-                        {/* Wait, HeroNetwork logic is: isHero ? 1 : 0.2 */}
-                        {/* So we pass a "globalTransitionOpacity" prop? Or just multiply opacityScale? */}
-                        {/* Let's multiply. opacityScale = (isHero ? 1 : 0.2) * mainOpacity.current */}
-                        <MainSceneContent 
-                            theme={theme} 
-                            isHero={isHero} 
-                            isContentPage={isContentPage} 
-                            transitionOpacity={mainOpacity.current} 
-                        />
-                  </group>
-             </Suspense>
-        </>
-    );
-}
-
-// Wrapper to prevent re-renders of the entire tree every frame
-function MainSceneContent({ theme, isHero, isContentPage, transitionOpacity }: any) {
-    const scale = (isHero ? 1 : 0.2) * transitionOpacity;
-    // For BackgroundMesh, we decided it's disabled/invisible anyway, but logic stands
-    // const meshScale = (isContentPage ? 1.5 : 0.5) * transitionOpacity;
-    
-    return (
-         <HeroNetwork3D themeValue={theme} opacityScale={scale} />
-    );
-}
+                        {/* We use React.Suspense to ensure assets load before showing */}
+                        {/* But visuals are controlled by opacity, so it doesn't pop */}
+                        <Suspense fallback={null}>
+                            <group visible={true}>
+                                    <BackgroundMesh themeValue={theme} visible={false} opacityScale={0} />
+                                    <MainSceneContent 
+                                        theme={theme} 
+                                        isHero={isHero} 
+                                        isContentPage={isContentPage} 
+                                        transitionOpacity={mainOpacity} 
+                                    />
+                            </group>
+                        </Suspense>
+                    </>
+                );
+            }
+            
+            // Wrapper to prevent re-renders of the entire tree every frame
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            function MainSceneContent({ theme, isHero, isContentPage, transitionOpacity }: any) {
+                // Pass refs down directly
+                return (
+                     <HeroNetwork3D themeValue={theme} opacityScale={transitionOpacity} isHero={isHero} />
+                );
+            }
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode, fallback: React.ReactNode }, { hasError: boolean }> {
   constructor(props: { children: React.ReactNode, fallback: React.ReactNode }) {

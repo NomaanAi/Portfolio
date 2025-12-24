@@ -6,7 +6,7 @@ import { Send, Mail, MapPin, ArrowRight, Github, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 import { CommonButton } from "@/components/common/CommonButton";
 import { CommonInput } from "@/components/common/CommonInput";
-import { CommonTextarea } from "@/components/common/CommonTextarea";
+import { CommonTextarea } from "@/components/common/CommonTextArea";
 import { CommonLabel } from "@/components/common/CommonLabel";
 
 export default function ContactPage() {

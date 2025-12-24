@@ -23,8 +23,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       : "light";
 
     const initialTheme = savedTheme || systemTheme;
-    setTheme(initialTheme);
-    setMounted(true);
+    
+    // Defer state updates to avoid React warnings about sync state in effect
+    setTimeout(() => {
+        setTheme(initialTheme);
+        setMounted(true);
+    }, 0);
 
     // Apply theme class
     if (initialTheme === "dark") {

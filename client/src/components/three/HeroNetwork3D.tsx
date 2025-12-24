@@ -7,10 +7,11 @@ import { createNoise3D } from "simplex-noise";
 
 interface HeroNetwork3DProps {
     themeValue: string;
-    opacityScale?: number;
+    opacityScale?: React.MutableRefObject<number> | number;
+    isHero?: boolean;
 }
 
-export default function HeroNetwork3D({ themeValue, opacityScale = 1 }: HeroNetwork3DProps) {
+export default function HeroNetwork3D({ themeValue, opacityScale = 1, isHero = true }: HeroNetwork3DProps) {
     const meshRef = useRef<THREE.InstancedMesh>(null);
     const linesRef = useRef<THREE.LineSegments>(null);
     const noise3D = useMemo(() => createNoise3D(), []);
@@ -27,10 +28,9 @@ export default function HeroNetwork3D({ themeValue, opacityScale = 1 }: HeroNetw
     const edgeColor = isDark ? new THREE.Color("#94a3b8") : new THREE.Color("#cbd5e1");
     // Base edge opacity
     const baseEdgeOpacity = isDark ? 0.2 : 0.25;
-    const edgeOpacity = baseEdgeOpacity * opacityScale;
 
     // Initial Data
-    const { positions, velocities, phases } = useMemo(() => {
+    const { positions, velocities, phases } = useMemo(() => { // eslint-disable-line react-hooks/exhaustive-deps
         const pos = new Float32Array(COUNT * 3);
         const vel = new Float32Array(COUNT * 3);
         const phs = new Float32Array(COUNT); // Independent phases for breathing
@@ -66,6 +66,22 @@ export default function HeroNetwork3D({ themeValue, opacityScale = 1 }: HeroNetw
 
     useFrame(() => {
         if (!meshRef.current || !linesRef.current) return;
+        
+        // Dynamic Opacity Calculation
+        const globalTransition = typeof opacityScale === 'number' ? opacityScale : opacityScale.current;
+        const targetMultiplier = isHero ? 1 : 0.2;
+        const finalOpacityScale = globalTransition * targetMultiplier;
+        
+        // Apply Opacity
+        // @ts-ignore
+        if (linesRef.current.material) {
+             // @ts-ignore
+             linesRef.current.material.opacity = baseEdgeOpacity * finalOpacityScale;
+             linesRef.current.visible = finalOpacityScale > 0.01;
+        }
+        
+        // Nodes don't change opacity much in this design, but let's toggle visibility
+        meshRef.current.visible = finalOpacityScale > 0.01;
 
         const currentPositions = positions; 
         const currentVelocities = velocities;
@@ -168,7 +184,7 @@ export default function HeroNetwork3D({ themeValue, opacityScale = 1 }: HeroNetw
                 <lineBasicMaterial 
                     color={edgeColor} 
                     transparent 
-                    opacity={edgeOpacity} 
+                    opacity={baseEdgeOpacity} // Initial, controlled by useFrame
                     depthWrite={false} 
                 />
             </lineSegments>

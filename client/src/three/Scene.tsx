@@ -3,7 +3,6 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Float } from "@react-three/drei";
-// @ts-ignore
 import * as THREE from "three";
 
 export function Scene() {
@@ -34,10 +33,13 @@ function HeroObject() {
     );
 }
 
-function Stars(props: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Stars(props: any = {}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref = useRef<any>(null);
   
   // Manual star generation (Safe from NaN)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const sphere = useMemo(() => {
     const count = 3000;
     const positions = new Float32Array(count * 3);

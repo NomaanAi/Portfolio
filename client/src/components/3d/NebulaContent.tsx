@@ -1,10 +1,8 @@
-// @ts-nocheck
 "use client";
 
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
-// @ts-ignore
 import * as THREE from "three";
 
 export default function NebulaContent() {
@@ -15,10 +13,13 @@ export default function NebulaContent() {
   );
 }
 
-function Stars(props: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Stars(props: any = {}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref = useRef<any>();
   
   // Manual star generation to prevent NaN issues from external libs
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const sphere = useMemo(() => {
     const count = 5000;
     const positions = new Float32Array(count * 3);
