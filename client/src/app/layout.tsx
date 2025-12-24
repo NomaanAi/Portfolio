@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/ui/Cursor";
-import Navbar from "@/components/layout/Navbar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import GlobalBackground from "@/components/layout/GlobalBackground";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -28,10 +27,10 @@ export default function RootLayout({
         className={`${inter.variable} antialiased bg-background text-foreground overflow-x-hidden transition-colors duration-300`}
       >
         <ThemeProvider>
-          <GlobalBackground />
-          <CustomCursor />
-          <Navbar />
-          {children}
+          <AuthProvider>
+            <CustomCursor />
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

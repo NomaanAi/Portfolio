@@ -11,7 +11,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       viewport={{ once: true }}
-      className="group relative p-8 bg-black/40 border border-white/10 hover:border-accent-cyan/50 transition-colors rounded-xl backdrop-blur-sm overflow-hidden"
+      className="group relative p-8 bg-surface border border-foreground/10 hover:border-accent-primary/50 transition-colors rounded-xl backdrop-blur-sm overflow-hidden"
     >
       <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
          <span className={`text-[10px] font-mono uppercase px-2 py-1 rounded border ${
@@ -21,17 +21,17 @@ export default function ProjectCard({ project, index }: { project: Project; inde
          </span>
       </div>
 
-      <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-accent-cyan transition-colors">
+      <h3 className="text-2xl font-bold text-foreground mb-3 group-hover:text-accent-primary transition-colors">
         {project.title}
       </h3>
       
-      <p className="text-text-secondary mb-6 leading-relaxed line-clamp-3">
+      <p className="text-accent-secondary mb-6 leading-relaxed line-clamp-3">
         {project.description}
       </p>
 
       <div className="flex flex-wrap gap-2 mb-8">
         {project.techStack.map(tech => (
-            <span key={tech} className="text-xs font-mono text-accent-cyan/80 bg-accent-cyan/10 px-2 py-1 rounded">
+            <span key={tech} className="text-xs font-mono text-accent-primary/80 bg-accent-primary/10 px-2 py-1 rounded">
                 {tech}
             </span>
         ))}
@@ -39,12 +39,12 @@ export default function ProjectCard({ project, index }: { project: Project; inde
 
       <div className="flex gap-4 mt-auto">
         {project.githubUrl && (
-            <a href={project.githubUrl} className="text-text-secondary hover:text-white flex items-center gap-2 text-sm font-bold">
+            <a href={project.githubUrl} className="text-accent-secondary hover:text-foreground flex items-center gap-2 text-sm font-bold">
                 <Github className="w-4 h-4" /> Code
             </a>
         )}
         {project.demoUrl && (
-            <a href={project.demoUrl} className="text-text-secondary hover:text-white flex items-center gap-2 text-sm font-bold">
+            <a href={project.demoUrl} className="text-accent-secondary hover:text-foreground flex items-center gap-2 text-sm font-bold">
                 <ExternalLink className="w-4 h-4" /> Live Demo
             </a>
         )}

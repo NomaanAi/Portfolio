@@ -20,6 +20,7 @@ import seedAdmin from './utils/seedAdmin.js';
 import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
+import siteSettingsRouter from './routes/siteSettingsRoutes.js';
 // Removed old imports, they are re-imported below closer to usage if sticking to previous pattern,
 // but better to keep imports at top.
 import skillRouter from './routes/skillRoutes.js';
@@ -145,11 +146,16 @@ app.get('/', (req, res) => {
 
 
 // API routes
+
+
+// ... 
+
 app.use('/api/auth', authRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/skills', skillRouter);
-app.use('/api/experience', experienceRouter);
+// app.use('/api/experience', experienceRouter); // Unused or future
 app.use('/api/contact', contactRouter);
+app.use('/api/settings', siteSettingsRouter);
 app.use('/api/upload', uploadRouter);
 
 // Serve static assets in production

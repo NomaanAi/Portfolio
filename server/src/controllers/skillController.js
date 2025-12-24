@@ -14,9 +14,12 @@ export const getSkills = async (req, res, next) => {
 // Admin Only
 export const createSkill = async (req, res, next) => {
     try {
+        console.log("createSkill START", req.body);
         const skill = await Skill.create(req.body);
+        console.log("createSkill SUCCESS", skill);
         res.status(201).json({ status: "success", data: skill });
     } catch (err) {
+        console.error("createSkill ERROR", err);
         next(err);
     }
 };

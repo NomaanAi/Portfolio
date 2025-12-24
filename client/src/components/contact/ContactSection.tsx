@@ -21,20 +21,20 @@ export default function ContactSection() {
         </p>
 
         <div className="flex justify-center gap-8">
-             <a href="mailto:contact@noman.ai" className="p-4 bg-white/5 rounded-full hover:bg-white/10 hover:text-accent-cyan transition-all border border-white/5 hover:border-accent-cyan/30">
+             <a href="mailto:nomanshaikh0998@gmail.com" className="p-4 bg-white/5 rounded-full hover:bg-white/10 hover:text-accent-cyan transition-all border border-white/5 hover:border-accent-cyan/30">
                 <Mail className="w-6 h-6" />
              </a>
-             <a href="https://github.com/noman-ai" className="p-4 bg-white/5 rounded-full hover:bg-white/10 hover:text-accent-cyan transition-all border border-white/5 hover:border-accent-cyan/30">
+             <a href="https://github.com/NomaanAi" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 rounded-full hover:bg-white/10 hover:text-accent-cyan transition-all border border-white/5 hover:border-accent-cyan/30">
                 <Github className="w-6 h-6" />
              </a>
-             <a href="https://linkedin.com/in/noman-ai" className="p-4 bg-white/5 rounded-full hover:bg-white/10 hover:text-accent-cyan transition-all border border-white/5 hover:border-accent-cyan/30">
+             <a href="https://www.linkedin.com/in/nomaanai/" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 rounded-full hover:bg-white/10 hover:text-accent-cyan transition-all border border-white/5 hover:border-accent-cyan/30">
                 <Linkedin className="w-6 h-6" />
              </a>
         </div>
         
         <footer className="mt-20 text-xs text-text-muted font-mono">
             SYSTEM STATUS: ONLINE<br/>
-            © 2025 NOMAN.AI ENGINEERING.
+            © 2025 NOMAN.DEV ENGINEERING.
         </footer>
       </motion.div>
     </section>

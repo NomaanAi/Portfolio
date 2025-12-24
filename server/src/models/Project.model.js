@@ -13,7 +13,8 @@ const projectSchema = new mongoose.Schema({
   liveUrl: { type: String },
   githubUrl: { type: String },
   featured: { type: Boolean, default: false },
-  order: { type: Number, default: 0 }
+  order: { type: Number, default: 0 },
+  status: { type: String, enum: ["Completed", "In Progress", "Building"], default: "Completed" },
 }, { timestamps: true });
 
 export default mongoose.model("Project", projectSchema);

@@ -26,7 +26,7 @@ export default function HeroSection() {
              <span className="text-accent-secondary">INTERFACE_</span>
            </h1>
            
-           <p className="text-lg md:text-xl text-accent-secondary max-w-md mb-16 font-light leading-relaxed border-l border-white/10 pl-6">
+           <p className="text-lg md:text-xl text-accent-secondary max-w-md mb-16 font-light leading-relaxed border-l border-foreground/10 pl-6">
              Building high-precision systems. <br />
              Focused on scalability, performance, and clear interaction models.
            </p>
@@ -44,12 +44,12 @@ export default function HeroSection() {
       </div>
 
       {/* Right Column: Structural 3D */}
-      <div className="relative w-full h-[50vh] lg:h-screen lg:sticky lg:top-0 order-1 lg:order-2 bg-[#080808] lg:border-l border-white/5">
+      <div className="relative w-full h-[50vh] lg:h-screen lg:sticky lg:top-0 order-1 lg:order-2 bg-background lg:border-l border-foreground/5 transition-colors duration-300">
          <div className="absolute inset-0">
            <Hero3D />
          </div>
          {/* Technical Overlay Lines */}
-         <div className="absolute bottom-10 left-10 text-xs font-mono text-white/10 hidden lg:block">
+         <div className="absolute bottom-10 left-10 text-xs font-mono text-foreground/10 hidden lg:block">
             COORD: 34.0522° N, 118.2437° W <br />
             RENDER: WEBGL 2.0
          </div>
