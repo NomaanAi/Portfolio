@@ -35,7 +35,7 @@ function HeroObject() {
 }
 
 function Stars(props: any) {
-  const ref = useRef<any>();
+  const ref = useRef<any>(null);
   
   // Manual star generation (Safe from NaN)
   const sphere = useMemo(() => {

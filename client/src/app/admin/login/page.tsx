@@ -3,7 +3,12 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { CommonButton } from "@/components/common/CommonButton";
+import { CommonInput } from "@/components/common/CommonInput";
+import { CommonLabel } from "@/components/common/CommonLabel";
+import { CommonCard } from "@/components/common/CommonCard";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -54,35 +59,36 @@ export default function AdminLoginPage() {
             )}
             
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">ID</label>
-              <input 
+              <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">ID</CommonLabel>
+              <CommonInput 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-background border border-border/20 p-3 text-foreground focus:outline-none focus:border-primary/50 transition-colors rounded-md font-mono text-sm"
+                className="bg-background font-mono text-sm"
                 placeholder="admin@system.local"
                 required
               />
             </div>
             
             <div className="space-y-2">
-               <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Key</label>
-              <input 
+               <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Key</CommonLabel>
+              <CommonInput 
                 type="password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-background border border-border/20 p-3 text-foreground focus:outline-none focus:border-primary/50 transition-colors rounded-md font-mono text-sm"
+                className="bg-background font-mono text-sm"
                 placeholder="••••••••"
                 required
               />
             </div>
 
-            <button 
+            <CommonButton 
               disabled={loading}
-              className="w-full bg-primary text-primary-foreground font-bold py-3 rounded-md text-sm uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full text-sm uppercase tracking-widest"
+              size="lg"
             >
               {loading ? "Verifying..." : "Initialize Session"}
-            </button>
+            </CommonButton>
           </form>
         </motion.div>
       </div>

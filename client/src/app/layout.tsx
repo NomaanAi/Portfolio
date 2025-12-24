@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import CustomCursor from "@/components/ui/Cursor";
+import CustomCursor from "@/components/layout/CustomCursor";
 
 const inter = Inter({
   variable: "--font-inter",

@@ -5,6 +5,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { CommonButton } from "@/components/common/CommonButton";
+import { CommonInput } from "@/components/common/CommonInput";
+import { CommonLabel } from "@/components/common/CommonLabel";
+
+const MotionButton = motion(CommonButton);
 
 export default function LoginPage() {
   const router = useRouter();
@@ -61,12 +66,12 @@ export default function LoginPage() {
             )}
             
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Email</label>
-              <input 
+              <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Email</CommonLabel>
+              <CommonInput 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-surface border border-foreground/10 p-4 text-foreground focus:outline-none focus:border-foreground/30 transition-colors"
+                className="bg-surface p-4 border-foreground/10 focus:border-foreground/30"
                 placeholder="john@example.com"
                 required
               />
@@ -74,27 +79,27 @@ export default function LoginPage() {
             
             <div className="space-y-2">
                <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Password</label>
+                  <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Password</CommonLabel>
                   <Link href="#" className="text-xs text-accent-secondary hover:text-foreground transition-colors">Forgot?</Link>
                </div>
-              <input 
+              <CommonInput 
                 type="password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-surface border border-foreground/10 p-4 text-foreground focus:outline-none focus:border-foreground/30 transition-colors"
+                className="bg-surface p-4 border-foreground/10 focus:border-foreground/30"
                 placeholder="••••••••"
                 required
               />
             </div>
 
-            <motion.button 
+            <MotionButton 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading}
-              className="w-full bg-foreground text-background font-bold py-4 tracking-widest uppercase hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full bg-foreground text-background font-bold py-4 tracking-widest uppercase hover:opacity-90 transition-opacity disabled:opacity-50 h-auto rounded-none"
             >
               {loading ? "Authenticating..." : "Authenticate"}
-            </motion.button>
+            </MotionButton>
             
             <div className="text-center mt-6">
               <Link href="/register" className="text-sm text-accent-secondary hover:text-foreground transition-colors">

@@ -5,6 +5,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { CommonButton } from "@/components/common/CommonButton";
+import { CommonInput } from "@/components/common/CommonInput";
+import { CommonLabel } from "@/components/common/CommonLabel";
+
+const MotionButton = motion(CommonButton);
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -67,52 +72,52 @@ export default function RegisterPage() {
             )}
 
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Full Name</label>
-              <input 
+              <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Full Name</CommonLabel>
+              <CommonInput 
                 type="text"
                 name="name" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-surface border border-foreground/10 p-4 text-foreground focus:outline-none focus:border-foreground/30 transition-colors"
+                className="bg-surface p-4 border-foreground/10 focus:border-foreground/30"
                 placeholder="John Doe"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Email</label>
-              <input 
+              <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Email</CommonLabel>
+              <CommonInput 
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="w-full bg-surface border border-foreground/10 p-4 text-foreground focus:outline-none focus:border-foreground/30 transition-colors"
+                className="bg-surface p-4 border-foreground/10 focus:border-foreground/30"
                 placeholder="john@example.com"
                 required
               />
             </div>
             
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Password</label>
-              <input 
+              <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Password</CommonLabel>
+              <CommonInput 
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full bg-surface border border-foreground/10 p-4 text-foreground focus:outline-none focus:border-foreground/30 transition-colors"
+                className="bg-surface p-4 border-foreground/10 focus:border-foreground/30"
                 placeholder="••••••••"
                 required
               />
             </div>
 
-            <motion.button 
+            <MotionButton 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading}
-              className="w-full bg-foreground text-background font-bold py-4 tracking-widest uppercase hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full bg-foreground text-background font-bold py-4 tracking-widest uppercase hover:opacity-90 transition-opacity disabled:opacity-50 h-auto rounded-none"
             >
               {loading ? "Registering..." : "Register"}
-            </motion.button>
+            </MotionButton>
             
             <div className="text-center mt-6">
               <Link href="/login" className="text-sm text-accent-secondary hover:text-foreground transition-colors">

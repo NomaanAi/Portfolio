@@ -1,9 +1,14 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { Plus, Trash2, Edit2, Check, X, Star, Github, Globe, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CommonButton } from "@/components/common/CommonButton";
+import { CommonInput } from "@/components/common/CommonInput";
+import { CommonLabel } from "@/components/common/CommonLabel";
+import { CommonTextarea } from "@/components/common/CommonTextarea";
+import { CommonSelect } from "@/components/common/CommonSelect";
+import { CommonCard, CommonCardContent } from "@/components/common/CommonCard";
+import { CommonAccordionItem } from "@/components/common/CommonAccordion";
 
 interface Project {
   _id: string;
@@ -110,17 +115,17 @@ export default function ProjectsPage() {
     <div className="space-y-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Projects Manager</h1>
-        <button 
+        <CommonButton 
            onClick={handleCreate}
-           className="bg-primary text-primary-foreground px-4 py-2 rounded-md flex items-center gap-2 hover:bg-primary/90 transition"
+           className="gap-2"
         >
             <Plus className="w-4 h-4" /> Add Project
-        </button>
+        </CommonButton>
       </div>
 
       <div className="grid grid-cols-1 gap-4">
         {projects.map((project) => (
-          <div key={project._id} className="bg-card border border-border/50 p-6 rounded-lg flex items-start justify-between group hover:border-border transition-colors">
+          <CommonCard key={project._id} className="p-6 flex items-start justify-between group hover:border-primary/50 transition-colors">
              <div>
                 <div className="flex items-center gap-3">
                     <h3 className="font-bold text-xl">{project.title}</h3>
@@ -142,14 +147,14 @@ export default function ProjectsPage() {
              </div>
 
              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity self-start">
-                <button onClick={() => handleEdit(project)} className="p-2 hover:bg-secondary rounded-md text-blue-400">
+                <CommonButton variant="ghost" size="icon" onClick={() => handleEdit(project)} className="text-blue-400 hover:text-blue-500 hover:bg-secondary">
                         <Edit2 className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleDelete(project._id)} className="p-2 hover:bg-secondary rounded-md text-red-400">
+                </CommonButton>
+                <CommonButton variant="ghost" size="icon" onClick={() => handleDelete(project._id)} className="text-red-400 hover:text-red-500 hover:bg-secondary">
                         <Trash2 className="w-4 h-4" />
-                </button>
+                </CommonButton>
             </div>
-          </div>
+          </CommonCard>
         ))}
 
         {projects.length === 0 && (
@@ -169,7 +174,7 @@ function ProjectForm({ initialData, onSave, onCancel }: {
 }) {
     const [data, setData] = useState(initialData);
     const [stackInput, setStackInput] = useState(initialData.stack?.join(", ") || "");
-    const [isDeepDiveOpen, setIsDeepDiveOpen] = useState(false);
+    // removed manual isDeepDiveOpen state, using CommonAccordionItem internal state
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -178,14 +183,14 @@ function ProjectForm({ initialData, onSave, onCancel }: {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl max-w-5xl mx-auto shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+        <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl max-w-5xl mx-auto shadow-2xl animate-in fade-in zoom-in-95 duration-300 relative overflow-hidden">
             {/* Header */}
             <div className="flex justify-between items-center p-8 border-b border-border/40 bg-secondary/5">
                 <div>
                     <h2 className="text-2xl font-bold font-heading text-foreground">{data._id ? "Edit Project" : "New Project"}</h2>
                     <p className="text-sm text-muted-foreground mt-1">Configure project details and case study content.</p>
                 </div>
-                <button type="button" onClick={onCancel} className="p-2 hover:bg-secondary rounded-full transition-colors"><X className="w-5 h-5 text-muted-foreground hover:text-foreground"/></button>
+                <CommonButton type="button" variant="ghost" size="icon" onClick={onCancel} className="rounded-full"><X className="w-5 h-5 text-muted-foreground hover:text-foreground"/></CommonButton>
             </div>
 
             <div className="p-8 space-y-10">
@@ -197,19 +202,19 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                            <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Project Title</label>
-                            <input 
+                            <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Project Title</CommonLabel>
+                            <CommonInput 
                                 required 
-                                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-heading font-bold text-lg" 
+                                className="font-heading font-bold text-lg" 
                                 value={data.title || ""} 
                                 onChange={e => setData({...data, title: e.target.value})} 
                                 placeholder="e.g. Neural Architecture Search"
                             />
                         </div>
                         <div className="space-y-3">
-                            <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Tagline</label>
-                            <input 
-                                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" 
+                            <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Tagline</CommonLabel>
+                            <CommonInput 
+                                className="" 
                                 value={data.tagline || ""} 
                                 onChange={e => setData({...data, tagline: e.target.value})} 
                                 placeholder="Short, punchy description"
@@ -218,10 +223,10 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Short Description</label>
-                        <textarea 
+                        <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Short Description</CommonLabel>
+                        <CommonTextarea 
                             required 
-                            className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all min-h-[120px] resize-y leading-relaxed" 
+                            className="min-h-[120px] resize-y leading-relaxed" 
                             value={data.desc || ""} 
                             onChange={e => setData({...data, desc: e.target.value})} 
                             placeholder="Brief overview of what this project does..."
@@ -237,11 +242,11 @@ function ProjectForm({ initialData, onSave, onCancel }: {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                          <div className="space-y-3">
-                            <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Live URL</label>
+                            <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Live URL</CommonLabel>
                             <div className="relative">
-                                <Globe className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
-                                <input 
-                                    className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-mono text-sm" 
+                                <Globe className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
+                                <CommonInput 
+                                    className="pl-10 font-mono text-sm" 
                                     value={data.liveUrl || ""} 
                                     onChange={e => setData({...data, liveUrl: e.target.value})} 
                                     placeholder="https://"
@@ -249,11 +254,11 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                             </div>
                         </div>
                          <div className="space-y-3">
-                            <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Github URL</label>
+                            <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Github URL</CommonLabel>
                             <div className="relative">
-                                <Github className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
-                                <input 
-                                    className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-mono text-sm" 
+                                <Github className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
+                                <CommonInput 
+                                    className="pl-10 font-mono text-sm" 
                                     value={data.githubUrl || ""} 
                                     onChange={e => setData({...data, githubUrl: e.target.value})} 
                                     placeholder="https://"
@@ -263,9 +268,9 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Tech Stack</label>
-                        <input 
-                            className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-mono text-sm" 
+                        <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">Tech Stack</CommonLabel>
+                        <CommonInput 
+                            className="font-mono text-sm" 
                             value={stackInput} 
                             onChange={e => setStackInput(e.target.value)} 
                             placeholder="Comma separated (e.g. React, Next.js, Node.js)" 
@@ -275,28 +280,22 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                 </section>
 
                 {/* SECTION 3: Deep Dive */}
-                <section className="border border-border/50 rounded-xl overflow-hidden bg-secondary/5">
-                    <button 
-                        type="button" 
-                        onClick={() => setIsDeepDiveOpen(!isDeepDiveOpen)}
-                        className="w-full flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors"
+                <section className="rounded-xl overflow-hidden bg-secondary/5 border border-border/50">
+                    <CommonAccordionItem
+                        title={
+                            <div className="flex items-center gap-2 px-4">
+                                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+                                     Deep Dive Details <span className="text-xs text-muted-foreground font-normal normal-case">(Optional Case Study)</span>
+                                </h3>
+                            </div>
+                        }
                     >
-                        <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-                             Deep Dive Details <span className="text-xs text-muted-foreground font-normal normal-case">(Optional Case Study)</span>
-                        </h3>
-                        <div className={cn("transition-transform duration-200", isDeepDiveOpen ? "rotate-180" : "")}>
-                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                        </div>
-                    </button>
-                    
-                    {isDeepDiveOpen && (
-                        <div className="p-6 pt-0 grid grid-cols-1 gap-6 animate-in slide-in-from-top-2 duration-200">
-                             <div className="h-px bg-border/50 mb-4"></div>
+                         <div className="p-6 pt-0 grid grid-cols-1 gap-6">
                              {['problem', 'challenges', 'solution', 'architecture', 'outcome'].map((field) => (
                                 <div key={field} className="space-y-2">
-                                    <label className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">{field}</label>
-                                    <textarea 
-                                        className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all min-h-[100px] text-sm leading-relaxed" 
+                                    <CommonLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold ml-1">{field}</CommonLabel>
+                                    <CommonTextarea 
+                                        className="min-h-[100px] text-sm leading-relaxed" 
                                         // @ts-ignore
                                         value={data[field] || ""} 
                                         // @ts-ignore
@@ -306,12 +305,12 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                                 </div>
                              ))}
                         </div>
-                    )}
+                    </CommonAccordionItem>
                 </section>
 
                 {/* SECTION 4: Meta */}
                 <section className="bg-background border border-border rounded-xl p-6 flex flex-wrap gap-8 items-center justify-between shadow-sm">
-                     <label className="flex items-center gap-3 cursor-pointer group">
+                     <label className="flex items-center gap-3 cursor-pointer group select-none">
                         <div className={cn(
                             "w-6 h-6 rounded border flex items-center justify-center transition-colors shadow-sm",
                             data.featured ? "bg-primary border-primary text-primary-foreground" : "bg-secondary border-border group-hover:border-primary/50"
@@ -323,9 +322,9 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                     </label>
                     
                     <div className="flex items-center gap-3">
-                        <label className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Status</label>
-                        <select 
-                            className="bg-secondary/30 border border-border rounded-lg px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-primary/50 outline-none cursor-pointer hover:bg-secondary/50 transition-colors"
+                        <CommonLabel className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Status</CommonLabel>
+                        <CommonSelect 
+                            className="w-[140px]"
                             value={data.status || "Completed"}
                             // @ts-ignore
                             onChange={e => setData({...data, status: e.target.value})}
@@ -333,14 +332,14 @@ function ProjectForm({ initialData, onSave, onCancel }: {
                             <option value="Completed">Completed</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Building">Building</option>
-                        </select>
+                        </CommonSelect>
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <label className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Order</label>
-                        <input 
+                        <CommonLabel className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Order</CommonLabel>
+                        <CommonInput 
                             type="number" 
-                            className="w-20 bg-background border border-border rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-primary/50 outline-none text-center" 
+                            className="w-20 font-mono text-center" 
                             value={data.order || 0} 
                             onChange={e => setData({...data, order: parseInt(e.target.value)})} 
                         />
@@ -350,8 +349,8 @@ function ProjectForm({ initialData, onSave, onCancel }: {
 
             {/* Footer */}
             <div className="p-6 border-t border-border/40 bg-secondary/5 flex justify-end gap-4 rounded-b-xl">
-                <button type="button" onClick={onCancel} className="px-6 py-3 hover:bg-secondary rounded-lg font-medium transition-colors text-muted-foreground hover:text-foreground">Cancel</button>
-                <button type="submit" className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all transform hover:-translate-y-0.5">Save Project</button>
+                <CommonButton type="button" variant="ghost" onClick={onCancel}>Cancel</CommonButton>
+                <CommonButton type="submit" className="shadow-lg shadow-primary/20">Save Project</CommonButton>
             </div>
         </form>
     );

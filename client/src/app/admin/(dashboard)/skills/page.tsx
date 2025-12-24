@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { Plus, Trash2, Edit2, Check, X, Move } from "lucide-react";
+import { CommonButton } from "@/components/common/CommonButton";
+import { CommonInput } from "@/components/common/CommonInput";
+import { CommonLabel } from "@/components/common/CommonLabel";
+import { CommonSelect } from "@/components/common/CommonSelect";
+import { CommonCard } from "@/components/common/CommonCard";
 
 interface Skill {
   _id: string;
@@ -92,12 +97,15 @@ export default function SkillsPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Skills Manager</h1>
-        <button 
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Skills Manager</h1>
+        <CommonButton 
            onClick={handleCreate}
-           className="bg-primary text-primary-foreground px-4 py-2 rounded-md flex items-center gap-2 hover:bg-primary/90 transition"
+           className="gap-2"
         >
             <Plus className="w-4 h-4" /> Add Skill
-        </button>
+        </CommonButton>
+      </div>
       </div>
 
       {isCreating && (
@@ -136,12 +144,12 @@ export default function SkillsPage() {
                         </div>
                     </div>
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handleEdit(skill)} className="p-2 hover:bg-secondary rounded-md text-blue-400">
+                        <CommonButton variant="ghost" size="icon" onClick={() => handleEdit(skill)} className="text-blue-400 hover:bg-secondary">
                              <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => handleDelete(skill._id)} className="p-2 hover:bg-secondary rounded-md text-red-400">
+                        </CommonButton>
+                        <CommonButton variant="ghost" size="icon" onClick={() => handleDelete(skill._id)} className="text-red-400 hover:bg-secondary">
                              <Trash2 className="w-4 h-4" />
-                        </button>
+                        </CommonButton>
                     </div>
                  </>
              )}
@@ -167,18 +175,16 @@ function SkillForm({ data, onChange, onSave, onCancel }: {
     return (
         <div className="flex flex-wrap gap-4 items-end w-full">
             <div className="flex-1 min-w-[200px]">
-                <label className="block text-xs mb-1 text-muted-foreground font-medium uppercase tracking-wider">Name</label>
-                <input 
-                    className="w-full bg-background border border-border rounded px-3 py-2 text-sm"
+                <CommonLabel className="block text-xs mb-1 text-muted-foreground font-medium uppercase tracking-wider">Name</CommonLabel>
+                <CommonInput 
                     value={data.name || ""}
                     onChange={e => onChange({ name: e.target.value })}
                     placeholder="e.g. React"
                 />
             </div>
             <div className="w-[150px]">
-                <label className="block text-xs mb-1 opacity-70">Category</label>
-                <select 
-                    className="w-full bg-background text-foreground border border-border rounded px-3 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                <CommonLabel className="block text-xs mb-1 opacity-70">Category</CommonLabel>
+                <CommonSelect 
                     value={data.category || CATEGORIES[0]}
                     onChange={e => onChange({ category: e.target.value })}
                 >
@@ -187,24 +193,23 @@ function SkillForm({ data, onChange, onSave, onCancel }: {
                             {c}
                         </option>
                     ))}
-                </select>
+                </CommonSelect>
             </div>
             <div className="w-[80px]">
-                <label className="block text-xs mb-1 opacity-70">Order</label>
-                <input 
+                <CommonLabel className="block text-xs mb-1 opacity-70">Order</CommonLabel>
+                <CommonInput 
                     type="number"
-                    className="w-full bg-background border border-border rounded px-3 py-2 text-sm"
                     value={data.order || 0}
                     onChange={e => onChange({ order: parseInt(e.target.value) })}
                 />
             </div>
             <div className="flex gap-2 pb-0.5">
-                <button onClick={onSave} className="bg-green-600 hover:bg-green-700 text-white p-2 rounded">
+                <CommonButton onClick={onSave} size="icon" className="bg-green-600 hover:bg-green-700">
                     <Check className="w-4 h-4" />
-                </button>
-                <button onClick={onCancel} className="bg-secondary hover:bg-secondary/80 text-foreground p-2 rounded">
+                </CommonButton>
+                <CommonButton onClick={onCancel} variant="secondary" size="icon">
                     <X className="w-4 h-4" />
-                </button>
+                </CommonButton>
             </div>
         </div>
     )

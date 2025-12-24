@@ -4,6 +4,10 @@ import { useState } from "react";
 import api from "@/lib/axios";
 import { Send, Mail, MapPin, ArrowRight, Github, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
+import { CommonButton } from "@/components/common/CommonButton";
+import { CommonInput } from "@/components/common/CommonInput";
+import { CommonTextarea } from "@/components/common/CommonTextarea";
+import { CommonLabel } from "@/components/common/CommonLabel";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -96,21 +100,21 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Name</label>
-                            <input 
+                            <CommonLabel className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Name</CommonLabel>
+                            <CommonInput 
                                 required 
-                                className="w-full bg-secondary/20 border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" 
+                                className="bg-secondary/20 border-border focus:ring-primary/50 focus:border-primary" 
                                 value={formData.name} 
                                 onChange={(e) => setFormData({...formData, name: e.target.value})} 
                                 placeholder="John Doe"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email</label>
-                            <input 
+                            <CommonLabel className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email</CommonLabel>
+                            <CommonInput 
                                 required 
                                 type="email"
-                                className="w-full bg-secondary/20 border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" 
+                                className="bg-secondary/20 border-border focus:ring-primary/50 focus:border-primary" 
                                 value={formData.email} 
                                 onChange={(e) => setFormData({...formData, email: e.target.value})} 
                                 placeholder="nomanshaikh0998@gmail.com"
@@ -119,10 +123,10 @@ export default function ContactPage() {
                     </div>
                     
                     <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Subject</label>
-                         <input 
+                        <CommonLabel className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Subject</CommonLabel>
+                         <CommonInput 
                             required 
-                            className="w-full bg-secondary/20 border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" 
+                            className="bg-secondary/20 border-border focus:ring-primary/50 focus:border-primary" 
                             value={formData.subject} 
                             onChange={(e) => setFormData({...formData, subject: e.target.value})} 
                             placeholder="Project Inquiry"
@@ -130,22 +134,22 @@ export default function ContactPage() {
                     </div>
                     
                     <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Message</label>
-                        <textarea 
+                        <CommonLabel className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Message</CommonLabel>
+                        <CommonTextarea 
                             required 
-                            className="w-full bg-secondary/20 border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all min-h-[150px] resize-none" 
+                            className="bg-secondary/20 border-border focus:ring-primary/50 focus:border-primary min-h-[150px] resize-none" 
                             value={formData.message} 
                             onChange={(e) => setFormData({...formData, message: e.target.value})} 
                             placeholder="Tell me about your project..."
                         />
                     </div>
 
-                    <button 
+                    <CommonButton 
                         disabled={loading}
-                        className="w-full bg-foreground text-background py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full py-4 rounded-xl font-bold bg-foreground text-background hover:opacity-90"
                     >
-                        {loading ? "Sending..." : <>Send Message <ArrowRight className="w-5 h-5" /></>}
-                    </button>
+                        {loading ? "Sending..." : <>Send Message <ArrowRight className="w-5 h-5 ml-2" /></>}
+                    </CommonButton>
 
                     {status === "success" && (
                         <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-500 rounded-xl text-center text-sm font-medium">
