@@ -16,7 +16,7 @@ export default function NebulaContent() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Stars(props: any = {}) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref = useRef<any>();
+  const ref = useRef<any>(null);
   
   // Manual star generation to prevent NaN issues from external libs
   // eslint-disable-next-line react-hooks/exhaustive-deps
