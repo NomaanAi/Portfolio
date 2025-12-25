@@ -1,7 +1,16 @@
 import axios from "axios";
 
 // Strict API URL handling - no hardcoded localhost in production
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+// Strict API URL handling - no hardcoded localhost in production
+const getBaseUrl = () => {
+  let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  if (!url.endsWith('/api')) {
+    url = `${url}/api`;
+  }
+  return url;
+};
+
+const API_URL = getBaseUrl();
 
 const api = axios.create({
   baseURL: API_URL,

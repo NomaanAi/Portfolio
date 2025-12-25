@@ -13,7 +13,7 @@ export const protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return res.status(401).json({ status: "fail", message: 'You are not logged in! Please log in to get access.' });
+    return res.status(401).json({ error: 'Token missing' });
   }
 
   try {
@@ -22,13 +22,13 @@ export const protect = async (req, res, next) => {
     // Check if user still exists
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
-      return res.status(401).json({ status: "fail", message: 'The user belonging to this token no longer exists.' });
+      return res.status(401).json({ error: 'The user belonging to this token no longer exists.' });
     }
 
     req.user = currentUser;
     next();
   } catch (err) {
-    return res.status(401).json({ status: "fail", message: 'Invalid token' });
+    return res.status(401).json({ error: 'Invalid token' });
   }
 };
 

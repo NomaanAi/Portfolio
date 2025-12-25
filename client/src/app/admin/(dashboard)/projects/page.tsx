@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { CommonButton } from "@/components/common/CommonButton";
 import { CommonInput } from "@/components/common/CommonInput";
 import { CommonLabel } from "@/components/common/CommonLabel";
-import { CommonTextarea } from "@/components/common/CommonTextArea";
+import { CommonTextarea } from "@/components/common/CommonTextarea";
 import { CommonSelect } from "@/components/common/CommonSelect";
 import { CommonCard, CommonCardContent } from "@/components/common/CommonCard";
 import { CommonAccordionItem } from "@/components/common/CommonAccordion";

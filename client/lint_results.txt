@@ -1,0 +1,279 @@
+﻿
+> client@0.1.0 lint
+> eslint
+
+
+D:\MyPortfilio\client\src\app\(auth)\register\page.tsx
+  25:9  warning  'handleChange' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\app\(public)\contact\page.tsx
+  5:10  warning  'Send' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\app\(public)\page.tsx
+  3:31  warning  'useRef' is defined but never used        @typescript-eslint/no-unused-vars
+  6:22  warning  'Code2' is defined but never used         @typescript-eslint/no-unused-vars
+  6:29  warning  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\app\(public)\projects\page.tsx
+  5:8   warning  'Link' is defined but never used        @typescript-eslint/no-unused-vars
+  6:25  warning  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\app\admin\(dashboard)\projects\page.tsx
+   5:62  warning  'ChevronDown' is defined but never used        @typescript-eslint/no-unused-vars
+  12:22  warning  'CommonCardContent' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\app\admin\(dashboard)\skills\page.tsx
+   5:41  warning  'Move' is defined but never used        @typescript-eslint/no-unused-vars
+  10:10  warning  'CommonCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\app\admin\login\page.tsx
+  11:10  warning  'CommonCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\3d\NebulaContent.tsx
+   6:13  warning  'THREE' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  16:1   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  18:3   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  22:3   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+D:\MyPortfilio\client\src\components\about\AboutPreview.jsx
+  3:10  warning  'motion' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\about\AboutSection.tsx
+  17:49  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+D:\MyPortfilio\client\src\components\admin\AdminSidebar.tsx
+  5:47  warning  'FileText' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\common\CommonInput.tsx
+  1:31  warning  'TextareaHTMLAttributes' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\contact\ContactSection.tsx
+  17:48  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+D:\MyPortfilio\client\src\components\layout\Navbar.tsx
+  7:27  warning  'UserIcon' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\layout\PageLoader.tsx
+  11:49  warning  'minDuration' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  31:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\MyPortfilio\client\src\components\layout\PageLoader.tsx:31:13
+  29 |             }, 800); // 800ms transition match
+  30 |         } else {
+> 31 |             setShouldRender(true);
+     |             ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |             setIsVisible(true);
+  33 |         }
+  34 |  react-hooks/set-state-in-effect
+
+D:\MyPortfilio\client\src\components\layout\PublicBackground.tsx
+   90:13  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+   91:56  warning  'isContentPage' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  104:35  warning  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  108:33  warning  'errorInfo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  128:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\MyPortfilio\client\src\components\layout\PublicBackground.tsx:128:7
+  126 |   useEffect(() => {
+  127 |     if (!isWebGLAvailable()) {
+> 128 |       setWebGLAvailable(false);
+      |       ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  129 |       return;
+  130 |     }
+  131 |  react-hooks/set-state-in-effect
+
+D:\MyPortfilio\client\src\components\projects\ProjectCard.tsx
+  4:32  warning  'Activity' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\skills\SkillsPreview.jsx
+  39:104  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+D:\MyPortfilio\client\src\components\skills\SkillsSection.tsx
+  22:64  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+D:\MyPortfilio\client\src\components\theme\ThemeProvider.tsx
+  16:10  warning  'mounted' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx
+   17:11  warning  'noise3D' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   33:36  warning  'phases' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   33:63  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+   41:27  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:41:27
+  39 |             // We generate the cloud around (0,0,0) so we can position the group precisely.
+  40 |             
+> 41 |             pos[i * 3] = (Math.random() - 0.5) * 8; // X: [-4, 4] width
+     |                           ^^^^^^^^^^^^^ Cannot call impure function
+  42 |             pos[i * 3 + 1] = (Math.random() - 0.5) * 12; // Y: [-6, 6] height
+  43 |             pos[i * 3 + 2] = (Math.random() - 0.5) * 8;  // Z: [-4, 4] depth
+  44 |               react-hooks/purity
+   42:31  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:42:31
+  40 |             
+  41 |             pos[i * 3] = (Math.random() - 0.5) * 8; // X: [-4, 4] width
+> 42 |             pos[i * 3 + 1] = (Math.random() - 0.5) * 12; // Y: [-6, 6] height
+     |                               ^^^^^^^^^^^^^ Cannot call impure function
+  43 |             pos[i * 3 + 2] = (Math.random() - 0.5) * 8;  // Z: [-4, 4] depth
+  44 |             
+  45 |             // Random velocities                                                         react-hooks/purity
+   43:31  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:43:31
+  41 |             pos[i * 3] = (Math.random() - 0.5) * 8; // X: [-4, 4] width
+  42 |             pos[i * 3 + 1] = (Math.random() - 0.5) * 12; // Y: [-6, 6] height
+> 43 |             pos[i * 3 + 2] = (Math.random() - 0.5) * 8;  // Z: [-4, 4] depth
+     |                               ^^^^^^^^^^^^^ Cannot call impure function
+  44 |             
+  45 |             // Random velocities
+  46 |             vel[i * 3] = (Math.random() - 0.5) * 0.002;              react-hooks/purity
+   46:27  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:46:27
+  44 |             
+  45 |             // Random velocities
+> 46 |             vel[i * 3] = (Math.random() - 0.5) * 0.002;
+     |                           ^^^^^^^^^^^^^ Cannot call impure function
+  47 |             vel[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
+  48 |             vel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+  49 |                                                                                                                             react-hooks/purity
+   47:31  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:47:31
+  45 |             // Random velocities
+  46 |             vel[i * 3] = (Math.random() - 0.5) * 0.002;
+> 47 |             vel[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
+     |                               ^^^^^^^^^^^^^ Cannot call impure function
+  48 |             vel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+  49 |
+  50 |             phs[i] = Math.random() * Math.PI * 2;                                                                                    react-hooks/purity
+   48:31  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:48:31
+  46 |             vel[i * 3] = (Math.random() - 0.5) * 0.002;
+  47 |             vel[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
+> 48 |             vel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+     |                               ^^^^^^^^^^^^^ Cannot call impure function
+  49 |
+  50 |             phs[i] = Math.random() * Math.PI * 2;
+  51 |         }                                                                                                           react-hooks/purity
+   50:22  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:50:22
+  48 |             vel[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+  49 |
+> 50 |             phs[i] = Math.random() * Math.PI * 2;
+     |                      ^^^^^^^^^^^^^ Cannot call impure function
+  51 |         }
+  52 |         return { positions: pos, velocities: vel, phases: phs };
+  53 |     }, []);                                                                                                                                                           react-hooks/purity
+   76:9   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/ban-ts-comment
+   78:14  warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/ban-ts-comment
+   96:13  error    Error: This value cannot be modified
+
+Modifying a value previously passed as an argument to a hook is not allowed. Consider moving the modification before calling the hook.
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:96:13
+  94 |             
+  95 |             // Apply velocity
+> 96 |             currentPositions[i3] += currentVelocities[i3];
+     |             ^^^^^^^^^^^^^^^^ `positions` cannot be modified
+  97 |             currentPositions[i3+1] += currentVelocities[i3+1];
+  98 |             currentPositions[i3+2] += currentVelocities[i3+2];
+  99 |                                                                                                                                                                                                                                                                                   react-hooks/immutability
+  101:72  error    Error: This value cannot be modified
+
+Modifying a value previously passed as an argument to a hook is not allowed. Consider moving the modification before calling the hook.
+
+D:\MyPortfilio\client\src\components\three\HeroNetwork3D.tsx:101:72
+   99 |
+  100 |             // Bounce off boundaries (Box roughly 10x15x10)
+> 101 |             if (currentPositions[i3] < -5 || currentPositions[i3] > 5) currentVelocities[i3] *= -1;
+      |                                                                        ^^^^^^^^^^^^^^^^^ `velocities` cannot be modified
+  102 |             if (currentPositions[i3+1] < -7 || currentPositions[i3+1] > 7) currentVelocities[i3+1] *= -1;
+  103 |             if (currentPositions[i3+2] < -5 || currentPositions[i3+2] > 5) currentVelocities[i3+2] *= -1;
+  104 |                                                              react-hooks/immutability
+
+D:\MyPortfilio\client\src\components\three\LoaderScene.tsx
+  26:43  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  30:27  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\LoaderScene.tsx:30:27
+  28 |         for (let i = 0; i < COUNT; i++) {
+  29 |             // Centered cluster
+> 30 |             pos[i * 3] = (Math.random() - 0.5) * 6;
+     |                           ^^^^^^^^^^^^^ Cannot call impure function
+  31 |             pos[i * 3 + 1] = (Math.random() - 0.5) * 6;
+  32 |             pos[i * 3 + 2] = (Math.random() - 0.5) * 6;
+  33 |         }  react-hooks/purity
+  31:31  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\LoaderScene.tsx:31:31
+  29 |             // Centered cluster
+  30 |             pos[i * 3] = (Math.random() - 0.5) * 6;
+> 31 |             pos[i * 3 + 1] = (Math.random() - 0.5) * 6;
+     |                               ^^^^^^^^^^^^^ Cannot call impure function
+  32 |             pos[i * 3 + 2] = (Math.random() - 0.5) * 6;
+  33 |         }
+  34 |         return { positions: pos };     react-hooks/purity
+  32:31  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\MyPortfilio\client\src\components\three\LoaderScene.tsx:32:31
+  30 |             pos[i * 3] = (Math.random() - 0.5) * 6;
+  31 |             pos[i * 3 + 1] = (Math.random() - 0.5) * 6;
+> 32 |             pos[i * 3 + 2] = (Math.random() - 0.5) * 6;
+     |                               ^^^^^^^^^^^^^ Cannot call impure function
+  33 |         }
+  34 |         return { positions: pos };
+  35 |     }, []);                         react-hooks/purity
+  61:9   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/ban-ts-comment
+  63:9   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/ban-ts-comment
+
+D:\MyPortfilio\client\src\context\AuthContext.tsx
+  35:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\MyPortfilio\client\src\three\Scene.tsx
+   6:13  warning  'THREE' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  36:1   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  38:3   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  42:3   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+D:\MyPortfilio\client\src\utils\capabilities.ts
+  11:12  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 59 problems (18 errors, 41 warnings)
+  0 errors and 9 warnings potentially fixable with the `--fix` option.
+
