@@ -142,6 +142,19 @@ export default function Navbar() {
                   
                   <div className="h-px bg-border/50 my-2" />
                   
+                  {/* Social Links Mobile */}
+                  <div className="flex items-center gap-4 px-4 py-2">
+                       <a href="https://github.com/NomaanAi" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-secondary/50 rounded-full">
+                          <Github className="w-5 h-5" />
+                       </a>
+                       <a href="https://www.linkedin.com/in/nomaanai/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-secondary/50 rounded-full">
+                          <Linkedin className="w-5 h-5" />
+                       </a>
+                  </div>
+
+                  <div className="h-px bg-border/50 my-2" />
+
+                  
                   {!user ? (
                       <div className="flex flex-col gap-2">
                         <Link

@@ -15,6 +15,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (data: any) => Promise<void>;
+  loginGoogle: (token: string) => Promise<void>;
   loginAdmin: (data: any) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => Promise<void>;
@@ -45,17 +46,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (credentials: any) => {
     const { data } = await api.post("/auth/login", credentials);
-    // Determine admin or user login based on role if needed, or just standard login
-    // If admin login is separate endpoint, we might need a flag.
-    // Use standard login for now, if it returns user with role, we are good.
-    // Exception: Admin Login page might call a different endpoint if structure is rigid.
-    // But typically /login works for all if unified.
-    // The previous code had /admin/login calls. 
-    // If this is a generic login function, it should handle both or we pass endpoint.
-    // Let's stick to standard /auth/login for now, if user is admin, they are admin.
-    
-    // IF the user is specifically trying to login as admin via admin page, they might call a specific function.
-    // But let's keep it simple: API returns user.
+    setUser(data.data.user);
+  };
+
+  const loginGoogle = async (token: string) => {
+    const { data } = await api.post("/auth/google", { token });
     setUser(data.data.user);
   };
 
@@ -89,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, loginAdmin, register, logout, checkAuth }}>
+    <AuthContext.Provider value={{ user, loading, login, loginGoogle, loginAdmin, register, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );

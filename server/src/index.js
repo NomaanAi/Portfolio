@@ -21,6 +21,7 @@ import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
 import siteSettingsRouter from './routes/siteSettingsRoutes.js';
+import chatRouter from './routes/chatRoutes.js';
 // Removed old imports, they are re-imported below closer to usage if sticking to previous pattern,
 // but better to keep imports at top.
 import skillRouter from './routes/skillRoutes.js';
@@ -157,6 +158,7 @@ app.use('/api/skills', skillRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/settings', siteSettingsRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/chat', chatRouter);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

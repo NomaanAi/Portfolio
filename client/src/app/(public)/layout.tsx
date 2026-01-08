@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/components/layout/Navbar";
-import PublicBackground from "@/components/layout/PublicBackground";
+
 
 export default function PublicLayout({
   children,
@@ -10,7 +10,6 @@ export default function PublicLayout({
 }) {
   return (
     <>
-      <PublicBackground />
       <Navbar />
       {children}
     </>

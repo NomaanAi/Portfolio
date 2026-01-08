@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { CommonButton } from "@/components/common/CommonButton";
 import { CommonInput } from "@/components/common/CommonInput";
 import { CommonLabel } from "@/components/common/CommonLabel";
+import GoogleLoginBtn from "@/components/auth/GoogleLoginBtn";
 
 const MotionButton = motion(CommonButton);
 
@@ -70,6 +71,14 @@ export default function RegisterPage() {
                 {error}
               </div>
             )}
+
+            <div className="space-y-4">
+               <GoogleLoginBtn />
+               <div className="relative flex items-center justify-center">
+                    <div className="border-t border-accent-secondary/20 w-full absolute"></div>
+                    <span className="bg-background px-2 text-xs text-accent-secondary uppercase tracking-widest relative z-10">OR</span>
+               </div>
+            </div>
 
             <div className="space-y-2">
               <CommonLabel className="text-xs font-bold uppercase tracking-widest text-accent-secondary">Full Name</CommonLabel>

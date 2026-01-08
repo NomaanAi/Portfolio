@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
-import PublicBackground from "@/components/layout/PublicBackground";
+
 
 export default function AuthLayout({
   children,
@@ -11,7 +11,7 @@ export default function AuthLayout({
 }) {
   return (
     <>
-      <PublicBackground />
+
       <Navbar />
       <div className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
         <motion.div

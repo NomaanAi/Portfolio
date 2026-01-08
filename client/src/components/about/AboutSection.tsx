@@ -14,16 +14,15 @@ export default function AboutSection() {
            viewport={{ once: true }}
         >
            <h2 className="text-4xl md:text-5xl font-bold mb-8">
-             <span className="text-accent-cyan">///</span> WHO I AM
+             <span className="text-accent-cyan">///</span> ABOUT ME
            </h2>
            <p className="text-lg text-text-secondary leading-relaxed mb-6">
-             I am a Machine Learning Engineer focused on the intersection of deep learning research and production software. 
-             I don't just train models; I build the infrastructure that serves them at scale.
+             I am a final year BCA student passionate about software development and artificial intelligence. 
+             My journey involves building practical web applications and understanding how AI can solve real-world problems.
            </p>
            <p className="text-lg text-text-secondary leading-relaxed">
-             My approach is rooted in first principles. Whether optimization of RAG pipelines or 
-             architecting distributed inference systems, I prioritize efficiency, auditablity, and performance using PyTorch, 
-             Kubernetes, and modern web standards.
+             I focus on writing clean code and learning modern technologies like Next.js and MongoDB. 
+             I am currently exploring how to integrate open-source LLMs into web interfaces to create smarter user experiences.
            </p>
         </motion.div>
 
@@ -38,8 +37,8 @@ export default function AboutSection() {
              <div className="aspect-square bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/10 to-transparent opacity-50" />
                 <div className="text-center p-8">
-                    <span className="block text-6xl font-bold text-white/20 mb-2">AI</span>
-                    <span className="block text-sm font-mono text-accent-cyan tracking-[0.3em] uppercase">Architecture</span>
+                    <span className="block text-6xl font-bold text-white/20 mb-2">DEV</span>
+                    <span className="block text-sm font-mono text-accent-cyan tracking-[0.3em] uppercase">Student & Builder</span>
                 </div>
              </div>
         </motion.div>

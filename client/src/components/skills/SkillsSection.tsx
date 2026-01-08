@@ -3,10 +3,10 @@
 import { motion } from "framer-motion";
 
 const SKILLS = {
-  "Core Stack": ["Python", "TypeScript", "C++", "SQL / NoSQL"],
-  "AI & ML": ["PyTorch", "TensorFlow", "HuggingFace", "LangChain", "RAG Pipelines"],
-  "Infrastructure": ["Docker", "Kubernetes", "AWS SageMaker", "FastAPI"],
-  "Web Engineering": ["Next.js (App Router)", "React", "Tailwind CSS", "Three.js"]
+  "Frontend": ["Next.js", "React", "Tailwind CSS", "JavaScript (ES6+)"],
+  "Backend": ["Node.js", "Express.js", "REST APIs", "Authentication"],
+  "Database": ["MongoDB Atlas", "Mongoose", "SQL Basics", "Schema Design"],
+  "AI & Tools": ["Git / GitHub", "Postman", "OpenRouter API", "VS Code"]
 };
 
 export default function SkillsSection() {
@@ -19,7 +19,7 @@ export default function SkillsSection() {
          viewport={{ once: true }}
       >
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-right">
-             CAPABILITIES <span className="text-accent-violet">///</span>
+             TECHNICAL SKILLS <span className="text-accent-violet">///</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

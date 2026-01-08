@@ -24,16 +24,16 @@ export default function ProjectsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen pt-32 pb-20 px-6 container-wide">
+    <main className="min-h-screen py-24 px-6 container-wide">
         <div className="text-center space-y-4 mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold font-heading">Project Archive</h1>
-            <p className="text-muted-foreground text-lg">A collection of my work and experiments.</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading">Project Archive</h1>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">A collection of my work, experiments, and production-grade applications.</p>
         </div>
 
         {loading ? (
-             <div className="text-center">Loading...</div>
+             <div className="flex justify-center py-20 text-muted-foreground">Loading projects...</div>
         ) : (
-             <div className="space-y-32">
+             <div className="space-y-24">
                  {/* Sort by featured or order, assumes API returns in some order or we sort manually here */}
                  {projects.map((project: any, index) => (
                      <ProjectDetailView key={project._id} project={project} index={index} />

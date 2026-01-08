@@ -7,6 +7,12 @@ import { ArrowRight, Code2, ExternalLink, Github, Linkedin } from "lucide-react"
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import PageLoader from "@/components/layout/PageLoader";
+import dynamic from "next/dynamic";
+
+const Sphere3D = dynamic(() => import("@/components/visuals/Sphere3D"), { 
+  ssr: false,
+  loading: () => <div className="w-full h-full min-h-[500px] animate-pulse bg-white/5 rounded-full blur-3xl opacity-20" />
+});
 
 const HERO_SLIDES = [
   {
@@ -69,91 +75,75 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen relative overflow-hidden">
       <PageLoader isLoading={isPageLoading} />
       
       {/* Hero Section */}
-      <section className="h-screen flex items-center container-wide relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full items-center">
+      <section className="min-h-screen pt-24 pb-12 flex items-center relative z-10">
+        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
             {/* Left: Content */}
-            <div className="text-left space-y-8">
-                 <div className="h-[200px] relative">
+            <div className="flex flex-col justify-center items-start space-y-8 max-w-2xl">
+                 <div className="relative w-full">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentSlide}
-                            initial={{ opacity: 0, x: -20, filter: "blur(5px)" }}
-                            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                            exit={{ opacity: 0, x: 20, filter: "blur(5px)" }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="absolute inset-0 flex flex-col justify-center space-y-4"
+                            initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
+                            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                            exit={{ opacity: 0, y: -10, filter: "blur(5px)" }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
+                            className="flex flex-col items-start space-y-6"
                         >
                             <h1 className={cn(
-                                "text-5xl md:text-7xl font-black font-heading tracking-tight leading-tight",
+                                "text-5xl md:text-6xl lg:text-7xl font-bold font-heading tracking-tight leading-[1.1] text-left",
                                 "bg-clip-text text-transparent bg-gradient-to-r",
                                 HERO_SLIDES[currentSlide].gradient
                             )}>
                                 {HERO_SLIDES[currentSlide].title}
                             </h1>
-                            <p className="text-xl md:text-2xl text-muted-foreground font-light tracking-wide max-w-lg">
+                            <p className="text-xl md:text-2xl text-muted-foreground font-medium max-w-lg leading-relaxed text-left">
                                 {HERO_SLIDES[currentSlide].subtitle}
                             </p>
                         </motion.div>
                     </AnimatePresence>
                  </div>
                  
-                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="flex gap-4 pt-4"
-                >
-                    <Link href="/projects" className="group px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40">
+                <div className="flex flex-wrap items-center gap-4 pt-4">
+                    <Link 
+                        href="/projects" 
+                        className="inline-flex h-14 min-w-[180px] items-center justify-center rounded-full bg-primary px-8 font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 gap-2 shadow-lg shadow-primary/20"
+                    >
                         View Work 
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4" />
                     </Link>
-                    <Link href="/contact" className="px-8 py-4 bg-background/50 backdrop-blur-sm border border-border/40 text-muted-foreground hover:text-foreground rounded-full font-bold hover:bg-secondary/50 transition-all">
+                    <Link 
+                        href="/contact" 
+                        className="inline-flex h-14 min-w-[180px] items-center justify-center rounded-full border border-white/10 bg-white/5 px-8 font-bold text-foreground transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 backdrop-blur-sm"
+                    >
                         Contact Me
                     </Link>
-                </motion.div>
+                </div>
             </div>
 
-            {/* Right: 3D Spacer (The Sphere is fixed in GlobalBackground) */}
-            <div className="hidden lg:block h-full pointer-events-none">
-                {/* 3D Model sits here visually via GlobalBackground canvas */}
+            {/* Right: Sphere 3D Interaction */}
+            <div className="hidden lg:block h-full min-h-[500px] relative z-20">
+                <Sphere3D />
             </div>
         </div>
         
          {/* Scroll Indicator */}
-         <motion.div 
-            className="absolute bottom-10 left-10 flex items-center gap-4 opacity-30"
-            animate={{ opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity }}
-         >
-            <div className="h-[1px] w-12 bg-foreground"></div>
-            <span className="text-[10px] uppercase tracking-widest font-mono">System Online</span>
-         </motion.div>
-         {/* Social Links */}
-         <motion.div 
-            className="absolute bottom-10 right-10 flex items-center gap-6 z-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-         >
-             <a href="https://github.com/NomaanAi" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform duration-200">
-                <Github className="w-5 h-5" />
-             </a>
-             <a href="https://www.linkedin.com/in/nomaanai/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors hover:scale-110 transform duration-200">
-                <Linkedin className="w-5 h-5" />
-             </a>
-         </motion.div>
+
+         
+         {/* Social Links Positioned Absolute Bottom Right */}
+
       </section>
 
       {/* Featured Projects */}
       {featuredProjects.length > 0 && (
-         <section className="py-32 px-6 container-wide relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6 border-b border-border/30 pb-6">
+         <section className="py-24 px-6 container-wide relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 border-b border-border/30 pb-6">
                 <div>
-                   <h2 className="text-4xl font-bold font-heading tracking-tight">Output / <span className="text-muted-foreground font-light">Featured</span></h2>
+                   <h2 className="text-3xl md:text-4xl font-bold font-heading tracking-tight mb-2">Featured Work</h2>
+                   <p className="text-muted-foreground text-lg">A selection of recent projects.</p>
                 </div>
                 <Link href="/projects" className="hidden md:flex items-center gap-2 text-sm font-medium hover:text-primary transition group text-muted-foreground">
                     View Archive <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -167,23 +157,29 @@ export default function Home() {
                     </TiltCard>
                 ))}
             </div>
+            
+            <div className="mt-8 md:hidden flex justify-center">
+                 <Link href="/projects" className="flex items-center gap-2 text-sm font-medium hover:text-primary transition group text-muted-foreground">
+                    View Archive <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                 </Link>
+            </div>
          </section>
       )}
       
       {/* Skill DNA (Teaser) */}
       <section className="py-24 border-t border-border/30 bg-background/50 backdrop-blur-sm relative z-10">
          <div className="container-wide text-center">
-            <h2 className="text-xs font-bold font-mono tracking-[0.3em] uppercase text-muted-foreground/60 mb-12">System Architecture</h2>
+            <h2 className="text-sm font-bold font-mono tracking-[0.3em] uppercase text-muted-foreground/80 mb-12">Core Technologies</h2>
             <div className="flex flex-wrap justify-center gap-x-12 gap-y-8 max-w-6xl mx-auto">
                  {skills.slice(0, 15).map((skill: any) => (
-                     <div key={skill._id} className="flex items-center gap-2 text-sm md:text-base font-medium opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                         <span className="w-1 h-1 rounded-full bg-primary"></span> {skill.name}
+                     <div key={skill._id} className="flex items-center gap-3 text-base font-medium text-foreground/80 hover:text-foreground transition-colors cursor-default">
+                         <span className="w-1.5 h-1.5 rounded-full bg-primary/80"></span> {skill.name}
                      </div>
                  ))}
             </div>
-            <div className="mt-12">
-                 <Link href="/skills" className="text-xs font-mono border border-border px-4 py-2 rounded hover:bg-muted transition-colors">
-                    Initialize Full Stack View
+            <div className="mt-16">
+                 <Link href="/skills" className="inline-flex items-center gap-2 text-sm font-mono border border-border px-6 py-3 rounded-lg hover:bg-secondary/50 transition-colors">
+                    <Code2 className="w-4 h-4" /> Initialize Full Stack View
                  </Link>
             </div>
          </div>

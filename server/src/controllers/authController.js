@@ -146,3 +146,54 @@ export const logout = (req, res) => {
   });
   res.status(200).json({ status: 'success' });
 };
+
+import { OAuth2Client } from 'google-auth-library';
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ status: "fail", message: "No token provided" });
+
+    // 1. Verify Google Token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { name, email, sub: googleId } = payload;
+
+    // 2. Check if user exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // 2a. If user exists but is local, link googleId? Or just login?
+      // For simplicity: Update googleId if missing
+      if (!user.googleId) {
+        user.googleId = googleId;
+        if (user.authProvider === 'local') {
+          // Keep authProvider local or switch? 
+          // Let's keep it as is, just link the ID.
+        }
+        await user.save();
+      }
+    } else {
+      // 3. Create new user
+      user = await User.create({
+        name,
+        email,
+        password: '', // Empty password
+        googleId,
+        authProvider: 'google',
+        role: 'user' // Default to user
+      });
+    }
+
+    // 4. Send Token
+    createSendToken(user, 200, res);
+
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    res.status(401).json({ status: "fail", message: "Invalid Google Token" });
+  }
+};

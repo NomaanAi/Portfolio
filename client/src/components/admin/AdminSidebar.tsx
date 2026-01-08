@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Code, FolderKanban, FileText, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Code, FolderKanban, FileText, Settings, LogOut, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Skills", href: "/admin/skills", icon: Code },
+  { name: "AI Assistant", href: "/admin/chat", icon: MessageCircle },
   { name: "Settings & Content", href: "/admin/settings", icon: Settings },
 ];
 

@@ -7,7 +7,8 @@ export default function CustomCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  const springConfig = { damping: 25, stiffness: 300, mass: 0.5 };
+  // Snappier Apple-style physics
+  const springConfig = { damping: 20, stiffness: 400, mass: 0.2 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
@@ -43,9 +44,9 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Main defined cursor dot */}
+      {/* Main defined cursor dot - Solid Color, No Blend Mode */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        className="fixed top-0 left-0 w-3 h-3 bg-primary rounded-full pointer-events-none z-[9999]"
         style={{
           translateX: cursorXSpring,
           translateY: cursorYSpring,
@@ -53,15 +54,15 @@ export default function CustomCursor() {
           y: "-50%",
         }}
         animate={{
-          scale: hovered ? 2.5 : 0.5,
+          scale: hovered ? 1 : 1, // Don't scale the dot, only the ring
           opacity: 1,
         }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.1 }}
       />
       
       {/* Subtle follower ring */}
       <motion.div
-        className="fixed top-0 left-0 w-10 h-10 border border-current rounded-full pointer-events-none z-[9998] text-accent-secondary opacity-20"
+        className="fixed top-0 left-0 w-8 h-8 border border-primary/50 rounded-full pointer-events-none z-[9998] opacity-30 backdrop-blur-[1px]"
         style={{
           translateX: cursorX,
           translateY: cursorY,
@@ -69,7 +70,9 @@ export default function CustomCursor() {
           y: "-50%",
         }}
         animate={{
-          scale: hovered ? 1.5 : 1,
+          scale: hovered ? 2.5 : 1,
+          opacity: hovered ? 0.5 : 0.3,
+          backgroundColor: hovered ? "var(--primary)" : "rgba(0, 0, 0, 0)",
         }}
         transition={{ duration: 0.15, ease: "easeOut" }}
       />

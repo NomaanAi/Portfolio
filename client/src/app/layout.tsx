@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
+import ChatWidget from "@/components/chat/ChatWidget";
+import InitialLoader from "@/components/ui/InitialLoader";
+import NeuralBackground from "@/components/visuals/NeuralBackground";
+import ClientProviders from "@/components/layout/ClientProviders";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -13,9 +17,6 @@ export const metadata: Metadata = {
   description: "Full Stack Engineer & Interface Designer.",
 };
 
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { AuthProvider } from "@/context/AuthContext";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,12 +27,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased bg-background text-foreground overflow-x-hidden transition-colors duration-300`}
       >
-        <ThemeProvider>
-          <AuthProvider>
+        <ClientProviders>
             <CustomCursor />
+            <InitialLoader />
+            <NeuralBackground />
+            <ChatWidget />
             {children}
-          </AuthProvider>
-        </ThemeProvider>
+        </ClientProviders>
       </body>
     </html>
   );
