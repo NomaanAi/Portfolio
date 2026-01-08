@@ -7,12 +7,8 @@ import { ArrowRight, Code2, ExternalLink, Github, Linkedin } from "lucide-react"
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import PageLoader from "@/components/layout/PageLoader";
-import dynamic from "next/dynamic";
+import NeuralSphere from "@/components/visuals/NeuralSphere";
 
-const Sphere3D = dynamic(() => import("@/components/visuals/Sphere3D"), { 
-  ssr: false,
-  loading: () => <div className="w-full h-full min-h-[500px] animate-pulse bg-white/5 rounded-full blur-3xl opacity-20" />
-});
 
 const HERO_SLIDES = [
   {
@@ -82,7 +78,7 @@ export default function Home() {
       <section className="min-h-screen pt-24 pb-12 flex items-center relative z-10">
         <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
             {/* Left: Content */}
-            <div className="flex flex-col justify-center items-start space-y-8 max-w-2xl">
+            <div className="flex flex-col justify-center items-start space-y-8 max-w-3xl w-full z-20">
                  <div className="relative w-full">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -94,39 +90,39 @@ export default function Home() {
                             className="flex flex-col items-start space-y-6"
                         >
                             <h1 className={cn(
-                                "text-5xl md:text-6xl lg:text-7xl font-bold font-heading tracking-tight leading-[1.1] text-left",
+                                "text-5xl md:text-6xl lg:text-8xl font-bold font-heading tracking-tight leading-[1] text-left",
                                 "bg-clip-text text-transparent bg-gradient-to-r",
                                 HERO_SLIDES[currentSlide].gradient
                             )}>
                                 {HERO_SLIDES[currentSlide].title}
                             </h1>
-                            <p className="text-xl md:text-2xl text-muted-foreground font-medium max-w-lg leading-relaxed text-left">
+                            <p className="text-xl md:text-2xl text-muted-foreground font-medium max-w-2xl leading-relaxed text-left">
                                 {HERO_SLIDES[currentSlide].subtitle}
                             </p>
                         </motion.div>
                     </AnimatePresence>
                  </div>
                  
-                <div className="flex flex-wrap items-center gap-4 pt-4">
+                <div className="flex flex-wrap items-center gap-6 pt-6">
                     <Link 
                         href="/projects" 
-                        className="inline-flex h-14 min-w-[180px] items-center justify-center rounded-full bg-primary px-8 font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 gap-2 shadow-lg shadow-primary/20"
+                        className="inline-flex h-14 min-w-[160px] items-center justify-center rounded-lg bg-primary px-8 text-base font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:-translate-y-1 active:scale-95 gap-2 shadow-lg shadow-primary/20"
                     >
                         View Work 
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-5 h-5" />
                     </Link>
                     <Link 
                         href="/contact" 
-                        className="inline-flex h-14 min-w-[180px] items-center justify-center rounded-full border border-white/10 bg-white/5 px-8 font-bold text-foreground transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 backdrop-blur-sm"
+                        className="inline-flex h-14 min-w-[160px] items-center justify-center rounded-lg border border-input bg-background/50 px-8 text-base font-bold text-foreground transition-all hover:bg-accent hover:text-accent-foreground hover:-translate-y-1 active:scale-95 backdrop-blur-sm"
                     >
                         Contact Me
                     </Link>
                 </div>
             </div>
 
-            {/* Right: Sphere 3D Interaction */}
-            <div className="hidden lg:block h-full min-h-[500px] relative z-20">
-                <Sphere3D />
+            {/* Right: Neural Sphere */}
+            <div className="hidden lg:flex h-full relative z-10 items-center justify-center">
+                 <NeuralSphere />
             </div>
         </div>
         

@@ -44,10 +44,10 @@ export default function InitialLoader() {
                initial={{ scale: 0.8, opacity: 0 }}
                animate={{ scale: 1, opacity: 1 }}
                transition={{ duration: 0.5 }}
-               className="w-20 h-20 bg-accent-cyan/10 rounded-full flex items-center justify-center relative"
+               className="w-20 h-20 bg-accent-primary/10 rounded-full flex items-center justify-center relative"
             >
-                <div className="absolute inset-0 border border-accent-cyan/20 rounded-full animate-ping opacity-20" />
-                <Bot className="w-10 h-10 text-accent-cyan" />
+                <div className="absolute inset-0 border border-accent-primary/20 rounded-full animate-ping opacity-20" />
+                <Bot className="w-10 h-10 text-accent-primary" />
             </motion.div>
 
             <motion.div
@@ -57,11 +57,11 @@ export default function InitialLoader() {
                className="text-center"
             >
                 <h2 className="text-xl font-bold mb-2">Initializing Portfolio</h2>
-                <div className="flex items-center justify-center gap-1 text-accent-cyan font-mono text-sm">
+                <div className="flex items-center justify-center gap-1 text-accent-primary font-mono text-sm">
                     <span>Establishing Connection</span>
-                    <span className="w-1 h-1 bg-accent-cyan rounded-full animate-bounce" />
-                    <span className="w-1 h-1 bg-accent-cyan rounded-full animate-bounce delay-100" />
-                    <span className="w-1 h-1 bg-accent-cyan rounded-full animate-bounce delay-200" />
+                    <span className="w-1 h-1 bg-accent-primary rounded-full animate-bounce" />
+                    <span className="w-1 h-1 bg-accent-primary rounded-full animate-bounce delay-100" />
+                    <span className="w-1 h-1 bg-accent-primary rounded-full animate-bounce delay-200" />
                 </div>
             </motion.div>
           </div>

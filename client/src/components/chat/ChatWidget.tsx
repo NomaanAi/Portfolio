@@ -106,10 +106,10 @@ export default function ChatWidget() {
               className="absolute bottom-16 right-0 w-[90vw] md:w-96 h-[500px] bg-background border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
             >
               {/* Header */}
-              <div className="p-4 bg-accent-cyan/10 border-b border-white/5 flex justify-between items-center">
+              <div className="p-4 bg-accent-primary/10 border-b border-white/5 flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-accent-cyan/20 flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-accent-cyan" />
+                  <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-accent-primary" />
                   </div>
                   <div>
                     <h3 className="font-bold text-white text-sm">Portfolio Assistant</h3>
@@ -138,8 +138,8 @@ export default function ChatWidget() {
                             <Lock className="w-6 h-6 text-white/70" />
                             <div className="absolute -top-1 -right-1">
                                 <span className="flex h-3 w-3">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-cyan opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-cyan"></span>
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-primary"></span>
                                 </span>
                             </div>
                         </div>
@@ -192,7 +192,7 @@ export default function ChatWidget() {
                                                 required
                                                 value={email}
                                                 onChange={e => setEmail(e.target.value)}
-                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-3 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-accent-cyan/50 focus:bg-white/10 transition-all"
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-3 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-accent-primary/50 focus:bg-white/10 transition-all"
                                             />
                                             <input 
                                                 type="password" 
@@ -200,7 +200,7 @@ export default function ChatWidget() {
                                                 required
                                                 value={password}
                                                 onChange={e => setPassword(e.target.value)}
-                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-3 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-accent-cyan/50 focus:bg-white/10 transition-all"
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-3 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-accent-primary/50 focus:bg-white/10 transition-all"
                                             />
                                         </div>
                                         <button 
@@ -212,7 +212,7 @@ export default function ChatWidget() {
                                         </button>
                                     </form>
                                      <div className="text-center mt-3 pb-2">
-                                        <button onClick={() => { setOpen(false); router.push('/login'); }} className="text-[10px] text-white/40 hover:text-accent-cyan transition-colors">
+                                        <button onClick={() => { setOpen(false); router.push('/login'); }} className="text-[10px] text-white/40 hover:text-accent-primary transition-colors">
                                             Don't have an account? Register
                                         </button>
                                     </div>
@@ -231,9 +231,9 @@ export default function ChatWidget() {
                         className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                       >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          msg.role === 'user' ? 'bg-white/10' : 'bg-accent-cyan/20'
+                          msg.role === 'user' ? 'bg-white/10' : 'bg-accent-primary/20'
                         }`}>
-                          {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4 text-accent-cyan" />}
+                          {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4 text-accent-primary" />}
                         </div>
                         <div className={`rounded-2xl p-3 text-sm max-w-[80%] ${
                           msg.role === 'user' 
@@ -247,13 +247,13 @@ export default function ChatWidget() {
                     
                     {loading && (
                        <div className="flex gap-3">
-                         <div className="w-8 h-8 rounded-full bg-accent-cyan/20 flex items-center justify-center flex-shrink-0">
-                           <Bot className="w-4 h-4 text-accent-cyan" />
+                         <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
+                           <Bot className="w-4 h-4 text-accent-primary" />
                          </div>
                          <div className="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-4 flex gap-1">
-                            <span className="w-2 h-2 bg-accent-cyan rounded-full animate-bounce" />
-                            <span className="w-2 h-2 bg-accent-cyan rounded-full animate-bounce delay-100" />
-                            <span className="w-2 h-2 bg-accent-cyan rounded-full animate-bounce delay-200" />
+                            <span className="w-2 h-2 bg-accent-primary rounded-full animate-bounce" />
+                            <span className="w-2 h-2 bg-accent-primary rounded-full animate-bounce delay-100" />
+                            <span className="w-2 h-2 bg-accent-primary rounded-full animate-bounce delay-200" />
                          </div>
                        </div>
                     )}
@@ -268,12 +268,12 @@ export default function ChatWidget() {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                         placeholder="Ask about my skills..."
-                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-accent-cyan/50 transition-colors"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-accent-primary/50 transition-colors"
                       />
                       <button 
                         onClick={sendMessage}
                         disabled={loading || !input.trim()}
-                        className="absolute right-2 top-2 p-1.5 bg-accent-cyan text-black rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute right-2 top-2 p-1.5 bg-accent-primary text-black rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Send className="w-4 h-4" />
                       </button>

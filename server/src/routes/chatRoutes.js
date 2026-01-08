@@ -33,7 +33,8 @@ router.post('/ingest', protect, restrictTo('admin'), async (req, res) => {
 });
 
 // Admin Routes (Protect these with authMiddleware in production)
-router.get('/settings', async (req, res) => {
+// Admin Routes (Protect these with authMiddleware in production)
+router.get('/settings', protect, restrictTo('admin'), async (req, res) => {
     try {
         const settings = await ChatbotSettings.getSettings();
         res.status(200).json({ status: 'success', data: { settings } });
@@ -42,7 +43,7 @@ router.get('/settings', async (req, res) => {
     }
 });
 
-router.patch('/settings', async (req, res) => {
+router.patch('/settings', protect, restrictTo('admin'), async (req, res) => {
     try {
         const settings = await ChatbotSettings.findOneAndUpdate({}, req.body, { new: true, upsert: true });
         res.status(200).json({ status: 'success', data: { settings } });
@@ -51,7 +52,7 @@ router.patch('/settings', async (req, res) => {
     }
 });
 
-router.get('/history', async (req, res) => {
+router.get('/history', protect, restrictTo('admin'), async (req, res) => {
     try {
         const logs = await ChatLog.find().sort({ createdAt: -1 }).limit(50);
         res.status(200).json({ status: 'success', data: { logs } });
