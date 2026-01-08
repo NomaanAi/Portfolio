@@ -1,87 +1,71 @@
 "use client";
 
-import React, { useRef, useMemo } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
+import React, { useEffect, useRef, useState } from "react";
 
 interface SmartCursorProps {
     theme: string;
 }
 
 export default function SmartCursor({ theme }: SmartCursorProps) {
-    const { viewport, mouse } = useThree();
-    const trailRef = useRef<THREE.InstancedMesh>(null);
-    const TRAIL_COUNT = 8;
-    
+    const cursorRef = useRef<HTMLDivElement>(null);
+    const followerRef = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        // Hide default cursor
+        document.body.style.cursor = 'none';
+
+        const moveCursor = (e: MouseEvent) => {
+            if (!isVisible) setIsVisible(true);
+            
+            if (cursorRef.current) {
+                cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            }
+            if (followerRef.current) {
+                // simple lag effect can be achieved with transition in CSS, 
+                // but for better precise control we could use RAF. 
+                // For now, let's use a slight delay via CSS transition which is performant.
+                followerRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            }
+        };
+
+        const handleMouseEnter = () => setIsVisible(true);
+        const handleMouseLeave = () => setIsVisible(false);
+
+        window.addEventListener("mousemove", moveCursor);
+        document.body.addEventListener("mouseenter", handleMouseEnter);
+        document.body.addEventListener("mouseleave", handleMouseLeave);
+
+        return () => {
+            document.body.style.cursor = 'auto';
+            window.removeEventListener("mousemove", moveCursor);
+            document.body.removeEventListener("mouseenter", handleMouseEnter);
+            document.body.removeEventListener("mouseleave", handleMouseLeave);
+        };
+    }, [isVisible]);
+
     const isDark = theme === 'dark';
-    
-    // Theme Colors
-    // Dark: Cyan glow (#06b6d4)
-    // Light: Slate inner (#475569)
-    const color = new THREE.Color(isDark ? "#06b6d4" : "#475569");
-    const emissive = isDark ? new THREE.Color("#06b6d4") : new THREE.Color("#000000");
-    const emissiveIntensity = isDark ? 2 : 0;
+    // Colors based on original: Dark: #06b6d4 (Cyan), Light: #475569 (Slate)
+    const cursorColor = isDark ? "bg-cyan-500" : "bg-slate-600";
+    const followerBorder = isDark ? "border-cyan-500" : "border-slate-600";
 
-    // History of positions for trails
-    const history = useRef<THREE.Vector3[]>(
-        Array(TRAIL_COUNT).fill(new THREE.Vector3(0,0,0))
-    );
-
-    const dummy = useMemo(() => new THREE.Object3D(), []);
-
-    useFrame(() => {
-        if (!trailRef.current) return;
-
-        // Convert normalized mouse coordinates (-1 to 1) to world coordinates
-        // We assume z=0 plane for cursor
-        const x = (mouse.x * viewport.width) / 2;
-        const y = (mouse.y * viewport.height) / 2;
-        const currentPos = new THREE.Vector3(x, y, 0);
-
-        // Shift history
-        // history.current.pop();
-        // history.current.unshift(currentPos);
-        // Better: Interpolate for smoother trails
-        // For simple trail, just unshift/pop is okay, but lerping gives "fluidity"
-        
-        // Let's implement a 'drag' effect where trails follow the head
-        const head = history.current[0];
-        head.lerp(currentPos, 0.4); // Head follows mouse fast
-
-        for (let i = 1; i < TRAIL_COUNT; i++) {
-             // Each subsequent node follows the previous one
-             history.current[i].lerp(history.current[i-1], 0.25);
-        }
-
-        // Apply transformations to instances
-        for (let i = 0; i < TRAIL_COUNT; i++) {
-            const pos = history.current[i];
-            // Scale down trailing nodes
-            const scale = 1 - (i / TRAIL_COUNT);
-            
-            dummy.position.copy(pos);
-            dummy.scale.setScalar(scale);
-            dummy.updateMatrix();
-            
-            trailRef.current.setMatrixAt(i, dummy.matrix);
-        }
-        trailRef.current.instanceMatrix.needsUpdate = true;
-    });
+    // Don't render on mobile/touch devices if possible, but for now just returning null if not mounted isn't enough detection.
+    // CSS media query `pointer: fine` is handled best in CSS, but here we render always and let CSS handle visibility or just keep it simple.
 
     return (
-        <group>
-             <instancedMesh ref={trailRef} args={[undefined, undefined, TRAIL_COUNT]}>
-                <sphereGeometry args={[0.12, 16, 16]} /> 
-                {/* 0.12 units roughly corresponds to 8-12px depending on viewport/camera z */}
-                <meshStandardMaterial 
-                    color={color}
-                    emissive={emissive}
-                    emissiveIntensity={emissiveIntensity}
-                    transparent
-                    opacity={0.8}
-                    roughness={0.5}
-                />
-             </instancedMesh>
-        </group>
+        <>
+            {/* Main Dot Cursor */}
+            <div
+                ref={cursorRef}
+                className={`fixed top-0 left-0 w-3 h-3 ${cursorColor} rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 will-change-transform`}
+                style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s', mixBlendMode: 'difference' }}
+            />
+            {/* Follower Ring */}
+            <div
+                ref={followerRef}
+                className={`fixed top-0 left-0 w-8 h-8 border ${followerBorder} rounded-full pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 will-change-transform transition-transform duration-100 ease-out`}
+                style={{ opacity: isVisible ? 0.6 : 0, transition: 'opacity 0.2s, transform 0.1s ease-out' }}
+            />
+        </>
     );
 }
