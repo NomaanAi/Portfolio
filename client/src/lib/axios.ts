@@ -1,12 +1,27 @@
 import axios from "axios";
 
-// Strict API URL handling - no hardcoded localhost in production
-// Strict API URL handling - no hardcoded localhost in production
+// Strict API URL handling
 const getBaseUrl = () => {
-  let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-  if (!url.endsWith('/api')) {
+  // In production, we must have the env var. In dev, we can fallback to localhost.
+  let url = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!url) {
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+       url = "http://localhost:5000/api";
+    } else {
+       // Is production/deployed but missing env var - critical error
+       if (process.env.NODE_ENV !== 'development') {
+          console.error("CRITICAL: NEXT_PUBLIC_API_URL is missing in production environment variables!");
+       }
+       // Fallback to relative path if proxying is expected, or empty to let it fail visibly
+       url = "/api"; 
+    }
+  }
+
+  if (url && !url.endsWith('/api')) {
     url = `${url}/api`;
   }
+  
   return url;
 };
 

@@ -76,25 +76,38 @@ export default function NeuralSphere() {
       mouseY = (e.clientY - rect.top - canvas.height / 2) * 0.0005;
     };
 
-    const draw = () => {
+    let lastTime = 0;
+    
+    const draw = (timestamp: number) => {
+      if (!lastTime) lastTime = timestamp;
+      const deltaTime = timestamp - lastTime;
+      lastTime = timestamp;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
 
       // Determine colors based on theme/CSS variables
-      // Simple switch for performance, could also read valid CSS vars if needed
       const isDark = theme === 'dark' || document.documentElement.classList.contains('dark');
       const pointColor = isDark ? "rgba(255, 255, 255, 0.8)" : "rgba(15, 23, 42, 0.8)";
-      const lineColor = isDark ? "rgba(6, 182, 212, 0.15)" : "rgba(37, 99, 235, 0.15)"; // Cyan vs Blue
+      const lineColor = isDark ? "rgba(6, 182, 212, 0.15)" : "rgba(37, 99, 235, 0.15)"; 
       const accentColor = isDark ? "rgba(6, 182, 212, 0.8)" : "rgba(37, 99, 235, 0.8)";
 
+      // Normalize speed: originally 0.002 per frame.
+      // Target 60fps -> 16.6ms per frame.
+      // 0.002 * 60 = 0.12 radians per second.
+      // So speed per ms approx = 0.00012
+      const speedFactor = 0.06; // Adjusted for pleasant speed with delta (ms)
 
-      // Auto rotation
-      rotationX += rotationSpeed;
-      rotationY += rotationSpeed * 0.5;
+      // Auto rotation with Delta Time
+      // deltaTime is in ms. 
+      // rotationSpeed (0.002) was per frame. 
+      // Let's use a calibrated value.
+      rotationX += 0.00003 * deltaTime * 20; // Calibrated for similar look to original
+      rotationY += 0.000015 * deltaTime * 20;
 
-      // Add mouse influence
+      // Add mouse influence (damped, so valid to keep per frame or scale with delta too)
       rotationX += mouseY * 0.1;
       rotationY += mouseX * 0.1;
 
@@ -108,12 +121,10 @@ export default function NeuralSphere() {
         let y = p.y * Math.cos(rotationX) - z * Math.sin(rotationX);
         z = p.y * Math.sin(rotationX) + z * Math.cos(rotationX);
 
-        // Save simulated state (optional if we want to mutate p)
-        // Check z for visibility/opacity
-        const scale = 400 / (400 - z); // Perspective projection
+        const scale = 400 / (400 - z); 
         const x2d = x * scale + centerX;
         const y2d = y * scale + centerY;
-        const opacity = Math.max(0.1, (z + radius) / (2 * radius)); // Closer = more opaque
+        const opacity = Math.max(0.1, (z + radius) / (2 * radius)); 
 
         return { x: x2d, y: y2d, z, opacity };
       });
@@ -125,7 +136,7 @@ export default function NeuralSphere() {
 
       for (let i = 0; i < projectedPoints.length; i++) {
         const p1 = projectedPoints[i];
-        if (p1.z < -100) continue; // Optimization: skip back-facing connections mostly
+        if (p1.z < -100) continue; 
 
         for (let j = i + 1; j < projectedPoints.length; j++) {
             const p2 = projectedPoints[j];
@@ -134,7 +145,6 @@ export default function NeuralSphere() {
             const dist = Math.sqrt(dx*dx + dy*dy);
             
             if (dist < connectionDistance) {
-                 // Opacity based on distance
                  const alpha = 1 - (dist / connectionDistance);
                  ctx.moveTo(p1.x, p1.y);
                  ctx.lineTo(p2.x, p2.y);
@@ -150,7 +160,6 @@ export default function NeuralSphere() {
           ctx.beginPath();
           ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
           
-          // Glow effect for closer points
           if (p.z > 50) {
               ctx.fillStyle = accentColor;
               ctx.shadowBlur = 10;
@@ -172,7 +181,7 @@ export default function NeuralSphere() {
     resize();
     window.addEventListener("resize", resize);
     window.addEventListener("mousemove", handleMouseMove);
-    draw();
+    animationFrameId = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener("resize", resize);

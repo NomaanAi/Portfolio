@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
 import ChatWidget from "@/components/chat/ChatWidget";
-import InitialLoader from "@/components/ui/InitialLoader";
 import NeuralBackground from "@/components/visuals/NeuralBackground";
 import ClientProviders from "@/components/layout/ClientProviders";
+import ClientLayout from "@/components/layout/ClientLayout";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,11 +28,12 @@ export default function RootLayout({
         className={`${inter.variable} antialiased bg-background text-foreground overflow-x-hidden transition-colors duration-300`}
       >
         <ClientProviders>
-            <CustomCursor />
-            <InitialLoader />
-            <NeuralBackground />
-            <ChatWidget />
-            {children}
+            <ClientLayout>
+                <CustomCursor />
+                <NeuralBackground />
+                <ChatWidget />
+                {children}
+            </ClientLayout>
         </ClientProviders>
       </body>
     </html>

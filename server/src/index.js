@@ -51,6 +51,13 @@ connectDB().then(() => {
 // Set security HTTP headers
 app.use(helmet());
 
+// Cross-Origin-Opener-Policy for Google OAuth Popups
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+});
+
 // Enable CORS
 app.use(
   cors({
@@ -58,8 +65,9 @@ app.use(
       const allowedOrigins = [
         process.env.CLIENT_ORIGIN,
         process.env.CLIENT_URL,
-        process.env.VITE_API_URL,
-        // Localhost allowed for development - remove in strict production if needed
+        process.env.VITE_API_URL, // Legacy support
+        // Localhost allowed for development - STRICTLY remove/guard in production if needed, 
+        // but often useful for local testing against prod backend if carefully managed.
         'http://localhost:5173',
         'http://localhost:3000',
         'http://127.0.0.1:5173'

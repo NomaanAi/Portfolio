@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot } from "lucide-react";
 
-export default function InitialLoader() {
-  const [loading, setLoading] = useState(true);
+export default function InitialLoader({ isLoading = true }: { isLoading?: boolean }) {
+  const [show, setShow] = useState(true);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -14,25 +14,38 @@ export default function InitialLoader() {
     // Check if we've already shown the loader this session
     const hasLoaded = sessionStorage.getItem("portfolio_loaded");
     
-    if (hasLoaded) {
-      setLoading(false);
+    if (hasLoaded && !isLoading) {
+      setShow(false);
       return;
     }
 
     // Minimum load time for effect
     const timer = setTimeout(() => {
-      setLoading(false);
-      sessionStorage.setItem("portfolio_loaded", "true");
+      // Only hide if external loading is also done
+      if (!isLoading) {
+          setShow(false);
+          sessionStorage.setItem("portfolio_loaded", "true");
+      }
     }, 1200);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [isLoading]);
+
+  // Force show if external loading is true (e.g. backend cold start)
+  useEffect(() => {
+      if (isLoading) setShow(true);
+      else {
+          // If loading finished, allow minimum timer to complete or hide immediately if timer done
+          const timer = setTimeout(() => setShow(false), 500); 
+          return () => clearTimeout(timer);
+      }
+  }, [isLoading]);
 
 
 
   return (
     <AnimatePresence>
-      {loading && (
+      {show && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, pointerEvents: "none" }}

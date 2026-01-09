@@ -49,13 +49,25 @@ export default function NeuralBackground() {
       }
     };
 
-    const draw = () => {
+    let lastTime = 0;
+
+    const draw = (timestamp: number) => {
+      if (!lastTime) lastTime = timestamp;
+      const deltaTime = timestamp - lastTime;
+      // Cap max delta to prevent huge jumps if tab was inactive
+      const dt = Math.min(deltaTime, 64); 
+      lastTime = timestamp;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Scaling factor: velocities were designed for ~60fps (16ms)
+      // If we used to add vx per frame, now we add vx * (dt / 16.6)
+      const speedScale = dt / 16.6;
 
       // Update and draw nodes
       nodes.forEach((node, i) => {
-        node.x += node.vx;
-        node.y += node.vy;
+        node.x += node.vx * speedScale;
+        node.y += node.vy * speedScale;
 
         // Bounce off walls
         if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
@@ -90,7 +102,7 @@ export default function NeuralBackground() {
 
     window.addEventListener("resize", resize);
     resize();
-    draw();
+    animationFrameId = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener("resize", resize);

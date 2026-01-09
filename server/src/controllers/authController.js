@@ -15,13 +15,17 @@ const createSendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + (parseInt(process.env.JWT_COOKIE_EXPIRES_IN) || 7) * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true,
-    // secure: process.env.NODE_ENV === 'production', // Enable in production with HTTPS
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Needed for cross-site if separate domains
+    httpOnly: true, // Prevents XSS
+    path: '/', // Ensure cookie is available across the entire app
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in prod
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' required for cross-site (Vercel -> Render)
   };
 
-  // For development on localhost/HTTP, secure must be false.
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  // Critical: SameSite='none' requires Secure=true.
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true;
+    cookieOptions.sameSite = 'none';
+  }
 
   res.cookie('jwt', token, cookieOptions);
 

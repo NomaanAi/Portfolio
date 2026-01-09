@@ -29,19 +29,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const checkAuth = async () => {
+  const checkAuth = async (retryCount = 0) => {
     try {
       const { data } = await api.get("/auth/me");
-      setUser(data.data.user);
-    } catch (error) {
-      setUser(null);
+      // /auth/me returns { status: 'success', user: ... } directly
+      setUser(data.user);
+    } catch (error: any) {
+      // Only logout on definitive auth failures
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        setUser(null);
+      } else {
+        // Handle Cold Starts / Network Errors (Render Free Tier)
+        if (retryCount < 3) {
+           console.log(`Backend warm-up / retry attempt ${retryCount + 1}...`);
+           await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s
+           return checkAuth(retryCount + 1);
+        }
+        // If all retries fail, keep user null but don't redirect (let UI handle offline state if needed)
+        console.error("Auth check failed after retries:", error);
+        setUser(null);
+      }
     } finally {
-      setLoading(false);
+      // Only stop loading after success or max retries
+      if (retryCount >= 3 || user) {
+          setLoading(false);
+      } else {
+         // If we are succeeding, we still need to turn off loading
+          setLoading(false);
+      }
     }
   };
 
+  // Improved useEffect to handle cleanup
   useEffect(() => {
-    checkAuth();
+    let mounted = true;
+    
+    const initAuth = async () => {
+        try {
+            await checkAuth();
+        } finally {
+            if (mounted) setLoading(false);
+        }
+    };
+
+    initAuth();
+    
+    return () => { mounted = false; };
   }, []);
 
   const login = async (credentials: any) => {
