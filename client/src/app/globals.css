@@ -1,33 +1,45 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  /* Light Mode (Default) */
-  --color-background: #f8fafc; /* Slate-50 */
-  --color-foreground: #0f172a; /* Slate-900 */
+  /* Minimal AI Theme - Professional & Clean */
+  --color-background: #020617; /* Slate 950 - Deep Charcoal */
+  --color-foreground: #f8fafc; /* Slate 50 */
   
-  --color-accent-primary: #020617; /* Slate-950 */
-  --color-accent-secondary: #475569; /* Slate-600 */
+  /* Primary Accent: Muted Indigo/Sky */
+  --color-accent: #6366f1; /* Indigo 500 */
+  --color-accent-secondary: #94a3b8; /* Slate 400 */
+  --color-accent-glow: rgba(99, 102, 241, 0.05); /* Extremely subtle */
   
-  --color-surface: rgba(0, 0, 0, 0.04);
-  --color-surface-hover: rgba(0, 0, 0, 0.08);
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-surface-border: rgba(255, 255, 255, 0.1);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui;
-  --font-heading: var(--font-inter), ui-sans-serif, system-ui; 
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui; /* Unified font for cleanliness */
+  --font-mono: var(--font-jetbrains-mono), monospace;
   
   --cursor-size: 20px;
 }
 
+/* Enforce dark mode variables */
 .dark {
-  /* Dark Mode */
-  --color-background: #050505; /* Deep Neutral Black */
-  --color-foreground: #f3f4f6; /* Slate-100 */
+  --color-background: #020617; 
+  --color-foreground: #f8fafc;
   
-  --color-accent-primary: #ffffff; 
-  --color-accent-secondary: #94a3b8; /* Slate-400 */
+  --color-accent: #6366f1;
+  --color-accent-secondary: #94a3b8;
+  --color-accent-glow: rgba(99, 102, 241, 0.05);
   
-  --color-surface: rgba(255, 255, 255, 0.05);
-  --color-surface-hover: rgba(255, 255, 255, 0.1);
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-surface-border: rgba(255, 255, 255, 0.1);
+}
+
+.mask-radial-fade {
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%), linear-gradient(to right, transparent 0%, black 20%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%), linear-gradient(to left, black 60%, transparent 100%);
 }
 
 @utility container-wide {

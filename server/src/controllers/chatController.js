@@ -1,7 +1,8 @@
 import ChatLog from '../models/ChatLog.js';
 import ChatbotSettings from '../models/ChatbotSettings.js';
 import mongoose from 'mongoose';
-import { ragService } from '../services/ragService.js';
+import { retrieveContext } from '../rag/retrieve.js';
+import { buildPrompt } from '../rag/prompt.js';
 
 // --- MAIN HANDLER ---
 export const handleChat = async (req, res) => {
@@ -19,108 +20,12 @@ export const handleChat = async (req, res) => {
         }
 
         // 2. RAG Retrieval
-        const retrievedChunks = await ragService.retrieve(message, 3);
+        const retrievedDocs = await retrieveContext(message, 5); // Get top 5
 
-        // Strictness Check (Simple heuristic: if no chunks or very low score, fallback)
-        // In a real embed system we'd check scores. Here we trust the retrieval.
-        // If "keyword search" returned nothing, retrievedChunks is empty.
+        // 3. Construct Prompt with RAG
+        const finalPrompt = await buildPrompt(message, retrievedDocs);
 
-        let contextData = "";
-        const contextIds = [];
-
-        if (retrievedChunks.length > 0) {
-            contextData = retrievedChunks.map(c => c.content).join('\n---\n');
-            contextIds.push(...retrievedChunks.map(c => c.title)); // Logging titles as IDs
-        } else {
-            // Safety: If strictly no info found, we can choose to answer generally or refuse.
-            // Goal says "Never answer outside provided data".
-            // So if no context, we should refuse.
-            return res.status(200).json({
-                status: 'success',
-                data: {
-                    reply: "I don't have enough information in my knowledge base to answer that specific question. Please try asking about my skills, projects, or education!",
-                    intent: 'no_context'
-                }
-            });
-        }
-
-        // 3. Fetch History
-        const history = await ChatLog.find({ sessionId })
-            .sort({ createdAt: -1 })
-            .limit(settings.maxHistory)
-            .lean();
-        const historyContext = history.reverse().map(log => `${log.role === 'user' ? 'User' : 'You'}: ${log.content}`).join('\n');
-
-        // 4. Construct Prompt
-        const systemPrompt = settings.systemPrompt || `
-    You are Nomaan's AI assistant on his personal portfolio website.
-    Your role is to answer confidently and professionally about Nomaan's skills, projects, experience, and education.
-
-    You MUST NEVER say:
-    - "I don't have enough information"
-    - "I don't know"
-    - "My knowledge base is limited"
-
-    If a question is unclear, give a helpful, confident answer using the information below.
-
-    ========================
-    ABOUT NOMAAN
-    ========================
-    Name: Nomaan  
-    Role: Full Stack Developer & Machine Learning Engineer  
-    Education: Bachelor of Computer Applications (BCA)  
-    Focus: Building scalable web applications, intelligent systems, and modern UI/UX experiences
-
-    ========================
-    FULL STACK DEVELOPER SKILLS
-    ========================
-    Frontend (Core): HTML5, CSS3, JavaScript (ES6+), TypeScript, Responsive Design, A11y
-    Frontend Frameworks: React.js, Next.js, Redux, Context API, Tailwind CSS, Bootstrap, Material UI, Framer Motion, GSAP
-    Backend: Node.js, Express.js, RESTful APIs, MVC, Middleware, Auth
-    Databases: MongoDB, MySQL, PostgreSQL, Firebase, Mongoose, Prisma (basic)
-    Auth: JWT, Google OAuth, Sessions, BCrypt, RBAC
-    DevOps: Git, Docker (basic), CI/CD, Vercel, Render, Netlify, Linux basics
-    Tools: VS Code, Postman, Axios, Webpack/Vite
-
-    ========================
-    MACHINE LEARNING ENGINEER SKILLS
-    ========================
-    Languages: Python, Java, JavaScript, SQL
-    Math: Linear Algebra, Probability & Statistics, Calculus, Optimization
-    Data: NumPy, Pandas, Matplotlib, Seaborn, Plotly
-    ML: Supervised/Unsupervised, Feature Engineering, Scikit-learn
-    Deep Learning: Neural Networks, TensorFlow, Keras, PyTorch (basic), CNNs, RNNs, Transformers (basic)
-    NLP: Text Preprocessing, TF-IDF, Embeddings, Sentiment Analysis
-    CV: OpenCV, Image Processing
-    MLOps: Flask/FastAPI, Model Deployment, Basic Docker
-
-    ========================
-    PROJECT EXPERIENCE
-    ========================
-    - Personal Portfolio Website (Next.js, Node.js, MongoDB)
-    - Backend REST API deployed on Render
-    - Google OAuth & JWT Authentication System
-    - Machine Learning projects using Python & Scikit-learn
-    - Data analysis and visualization projects
-
-    ========================
-    RESPONSE RULES
-    ========================
-    1. If user asks about skills -> ALWAYS list skills clearly.
-    2. If user asks "What can you do?" -> summarize Full Stack + ML skills.
-    3. If user asks vaguely -> provide helpful context and redirect.
-    4. Keep answers concise, confident, and recruiter-friendly.
-    5. Assume the user is a recruiter, interviewer, or portfolio visitor. 
-    6. Use ONLY the provided context data below if relevant.
-
-    CONTEXT DATA:
-    ${contextData}
-    
-    CHAT HISTORY:
-    ${historyContext}
-    `;
-
-        // 5. Call OpenRouter API
+        // 4. Call OpenRouter API
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -130,8 +35,12 @@ export const handleChat = async (req, res) => {
             body: JSON.stringify({
                 model: settings.model,
                 messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: message }
+                    { role: "system", content: "You are a helpful assistant." }, // System prompt is embedded in finalPrompt content now, or we can use role: user for the big block.
+                    // The buildPrompt returns a big string containing system instructions + context + user question.
+                    // Ideally, we should put this in 'user' role or split it. 
+                    // However, many OpenRouter models handle a large prompt in 'user' fine.
+                    // Strategy: Use a minimal system prompt and put the whole RAG block in the last user message.
+                    { role: "user", content: finalPrompt }
                 ]
             })
         });
@@ -139,13 +48,20 @@ export const handleChat = async (req, res) => {
         const data = await response.json();
         const botReply = data.choices?.[0]?.message?.content || "I'm having trouble connecting right now. Please try again.";
 
+        // 5. Save Logs (Keep MongoDB for logs)
+        // Log the used context IDs or content metadata if you wish. 
+        // Here we just accept we used retrieval.
+
+        // ... (Log saving logic remains)
+
+
         // 6. Save Logs
         await ChatLog.create({
             sessionId: sessionId || new mongoose.Types.ObjectId().toString(),
             role: 'user',
             content: message,
             userId: user ? user._id : null,
-            metadata: { contextIds }
+            metadata: {}
         });
 
         await ChatLog.create({
@@ -153,14 +69,14 @@ export const handleChat = async (req, res) => {
             role: 'assistant',
             content: botReply,
             userId: user ? user._id : null,
-            contextUsed: contextIds
+            // contextUsed: []
         });
 
         res.status(200).json({
             status: 'success',
             data: {
                 reply: botReply,
-                contextUsed: contextIds
+                // contextUsed: []
             }
         });
 

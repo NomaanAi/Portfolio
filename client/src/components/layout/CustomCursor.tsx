@@ -44,9 +44,9 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Main defined cursor dot - Solid Color, No Blend Mode */}
+      {/* Main defined cursor dot - Solid Color, Low Opacity */}
       <motion.div
-        className="fixed top-0 left-0 w-3 h-3 bg-primary rounded-full pointer-events-none z-[9999]"
+        className="fixed top-0 left-0 w-2.5 h-2.5 bg-foreground/30 rounded-full pointer-events-none z-[9999]"
         style={{
           translateX: cursorXSpring,
           translateY: cursorYSpring,
@@ -54,27 +54,27 @@ export default function CustomCursor() {
           y: "-50%",
         }}
         animate={{
-          scale: hovered ? 1 : 1, // Don't scale the dot, only the ring
-          opacity: 1,
+          scale: hovered ? 1.5 : 1, 
+          opacity: hovered ? 0.8 : 0.4,
         }}
         transition={{ duration: 0.1 }}
       />
       
-      {/* Subtle follower ring */}
+      {/* Subtle follower ring - REMOVED for minimalism or kept extremely faint */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-primary/50 rounded-full pointer-events-none z-[9998] opacity-30 backdrop-blur-[1px]"
+        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] opacity-10"
         style={{
           translateX: cursorX,
           translateY: cursorY,
           x: "-50%",
           y: "-50%",
+          border: "1px solid var(--color-foreground)"
         }}
         animate={{
-          scale: hovered ? 2.5 : 1,
-          opacity: hovered ? 0.5 : 0.3,
-          backgroundColor: hovered ? "var(--primary)" : "rgba(0, 0, 0, 0)",
+          scale: hovered ? 2 : 1,
+            opacity: hovered ? 0.2 : 0,
         }}
-        transition={{ duration: 0.15, ease: "easeOut" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
       />
     </>
   );

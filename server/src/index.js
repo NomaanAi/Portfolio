@@ -21,7 +21,7 @@ import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
 import siteSettingsRouter from './routes/siteSettingsRoutes.js';
-import chatRouter from './routes/chatRoutes.js';
+import chatRouter from './routes/chat.route.js';
 // Removed old imports, they are re-imported below closer to usage if sticking to previous pattern,
 // but better to keep imports at top.
 import skillRouter from './routes/skillRoutes.js';
@@ -41,9 +41,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Connect to MongoDB
-// Connect to MongoDB
-connectDB().then(() => {
+connectDB().then(async () => {
   seedAdmin();
+  // Ingest RAG data on startup
+  try {
+    const { ingestData } = await import('./rag/ingest.js');
+    await ingestData();
+  } catch (err) {
+    console.error("RAG Ingestion Error:", err);
+  }
 });
 
 // 1) GLOBAL MIDDLEWARES

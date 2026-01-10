@@ -12,17 +12,20 @@ const config: Config = {
         background: "var(--color-background)",
         foreground: "var(--color-foreground)",
         accent: {
-          primary: "var(--color-accent-primary)",
+          DEFAULT: "var(--color-accent)",
           secondary: "var(--color-accent-secondary)",
+          glow: "var(--color-accent-glow)",
         },
         surface: {
           DEFAULT: "var(--color-surface)",
           hover: "var(--color-surface-hover)",
+          border: "var(--color-surface-border)",
         }
       },
       fontFamily: {
         sans: ["var(--font-inter)"],
-        heading: ["var(--font-heading)"],
+        heading: ["var(--font-space-grotesk)"], // New heading font
+        mono: ["var(--font-jetbrains-mono)"], // New mono font
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

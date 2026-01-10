@@ -1,0 +1,6 @@
+{
+  "watch": ["src", ".env"],
+  "ext": "js,json",
+  "ignore": ["data/*", "logs/*", "uploads/*"],
+  "exec": "node -r dotenv/config src/index.js"
+}

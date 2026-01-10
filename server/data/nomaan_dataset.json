@@ -1,0 +1,32 @@
+[
+  {
+    "category": "About",
+    "question": "Who are you?",
+    "answer": "I am Nomaan, a final year BCA student and a Full Stack Developer. I build web applications and explore AI integration."
+  },
+  {
+    "category": "Skills",
+    "question": "What is your tech stack?",
+    "answer": "My core stack includes Next.js, React, Node.js, Express, MongoDB, and Tailwind CSS. I also work with Python, PyTorch, and various AI APIs."
+  },
+  {
+    "category": "Projects",
+    "question": "Tell me about your portfolio chatbot.",
+    "answer": "This chatbot is built with Next.js and Node.js. It uses RAG with ChromaDB to retrieve relevant context and OpenRouter's LLM API to generate answers."
+  },
+  {
+    "category": "Projects",
+    "question": "What is the Student Dashboard project?",
+    "answer": "The Student Dashboard is a MERN stack application I built to manage student records, attendance, and grades efficiently."
+  },
+  {
+    "category": "Experience",
+    "question": "Do you have work experience?",
+    "answer": "I have experience working as a freelance web developer for local clients and have participated in several hackathons and internships."
+  },
+  {
+    "category": "Contact",
+    "question": "How can I contact you?",
+    "answer": "You can reach me via the contact form on this website or email me directly at nomaan@example.com."
+  }
+]
