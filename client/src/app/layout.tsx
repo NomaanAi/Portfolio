@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google"; // Updated imports
 import "./globals.css";
-import CustomCursor from "@/components/layout/CustomCursor";
+// Removed CustomCursor
 import ChatWidget from "@/components/chat/ChatWidget";
-import NeuralBackground from "@/components/ui/NeuralBackground"; // Correct path
+// Removed NeuralBackground
 import ClientProviders from "@/components/layout/ClientProviders";
 import ClientLayout from "@/components/layout/ClientLayout";
+import { ThemeScript } from "@/components/theme/ThemeScript";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,14 +36,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground overflow-x-hidden transition-colors duration-300 relative`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground overflow-x-hidden`}
       >
-        <NeuralBackground />
+        <ThemeScript />
         <ClientProviders>
             <ClientLayout>
-                <div className="relative z-10">
-                    <CustomCursor />
-                    <ChatWidget />
+                {/* Reset: Removed CustomCursor and ChatWidget (temporarily checked if Widget needs to stay) - User said Chatbot UI remains fully functional */}
+                {/* Keeping ChatWidget as per 'Chatbot UI remains fully functional' rule, but removing visual fluff */}
+                <ChatWidget />
+                <div className="min-h-screen flex flex-col">
                     {children}
                 </div>
             </ClientLayout>

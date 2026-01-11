@@ -21,11 +21,10 @@ import authRouter from './routes/authRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import contactRouter from './routes/contactRoutes.js';
 import siteSettingsRouter from './routes/siteSettingsRoutes.js';
-import chatRouter from './routes/chat.route.js';
+import chatRouter from './routes/chatRoutes.js';
 // Removed old imports, they are re-imported below closer to usage if sticking to previous pattern,
 // but better to keep imports at top.
 import skillRouter from './routes/skillRoutes.js';
-import experienceRouter from './routes/experienceRoutes.js';
 import uploadRouter from './routes/uploadRoutes.js';
 
 // Load environment variables
@@ -168,7 +167,6 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/skills', skillRouter);
-// app.use('/api/experience', experienceRouter); // Unused or future
 app.use('/api/contact', contactRouter);
 app.use('/api/settings', siteSettingsRouter);
 app.use('/api/upload', uploadRouter);

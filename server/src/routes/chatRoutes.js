@@ -2,14 +2,15 @@ import express from 'express';
 import { handleChat, getKnowledge, createKnowledge, updateKnowledge, deleteKnowledge } from '../controllers/chatController.js';
 import ChatbotSettings from '../models/ChatbotSettings.js';
 import ChatLog from '../models/ChatLog.js';
-
-const router = express.Router();
 import { protect, restrictTo } from '../middleware/auth.js';
 import { ragService } from '../services/ragService.js';
 import path from 'path';
 
+const router = express.Router();
+
 // Protected Chat Route
-router.post('/message', protect, handleChat);
+// Changed from /message to / to match app.use('/api/chat') mount point
+router.post('/', handleChat);
 
 // Knowledge Base Management (Admin Only)
 router.route('/knowledge')
@@ -32,7 +33,6 @@ router.post('/ingest', protect, restrictTo('admin'), async (req, res) => {
     }
 });
 
-// Admin Routes (Protect these with authMiddleware in production)
 // Admin Routes (Protect these with authMiddleware in production)
 router.get('/settings', protect, restrictTo('admin'), async (req, res) => {
     try {

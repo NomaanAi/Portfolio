@@ -24,7 +24,7 @@ export default function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <nav className="fixed top-0 w-full border-b border-border/20 bg-background/60 backdrop-blur-md z-50 transition-colors duration-300">
+    <nav className="fixed top-0 w-full border-b border-border bg-background z-50">
       <div className="container-wide flex h-16 items-center justify-between">
         <Link href="/" className="font-heading font-bold text-xl tracking-tighter hover:opacity-80 transition">
           Noman.Dev
@@ -38,10 +38,10 @@ export default function Navbar() {
                         key={link.href}
                         href={link.href}
                         className={cn(
-                            "px-4 py-2 text-sm font-medium rounded-full transition-colors",
+                            "px-3 py-1.5 text-sm font-medium transition-all duration-150 ease-out rounded-[4px] active:scale-[0.97] active:duration-100",
                             pathname === link.href 
-                              ? "bg-primary text-primary-foreground" 
-                              : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                              ? "text-foreground" 
+                              : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
                         )}
                     >
                         {link.label}
@@ -66,7 +66,7 @@ export default function Navbar() {
                         <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                             Login
                         </Link>
-                        <Link href="/register" className="px-4 py-2 bg-foreground text-background text-sm font-bold rounded-full hover:opacity-90 transition-opacity">
+                        <Link href="/register" className="px-4 py-2 bg-foreground text-background text-sm font-bold rounded-full hover:opacity-90 active:scale-[0.97] transition-all duration-150 ease-out active:duration-100">
                             Register
                         </Link>
                     </>
