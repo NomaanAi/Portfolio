@@ -18,21 +18,22 @@ export const buildPrompt = async (userQuestion, contextDocs) => {
         systemPrompt = "You are a helpful portfolio assistant.";
     }
 
-    const contextText = contextDocs.join('\n\n');
+
+
+    // Explicitly handle empty context to prevent hallucination
+    const contextText = contextDocs.length > 0 ? contextDocs.join('\n\n') : "NO DATA FOUND. The user's query returned no results from the portfolio database.";
+
+    // console.log("System Prompt Loaded:", systemPrompt.length > 50);
 
     const finalPrompt = `
 ${systemPrompt}
 
-You must answer the user's question explicitly and ONLY using the context provided below. 
-Do not hallucinate or use outside knowledge. 
-If the answer is not in the context, say you don't know based on the provided profile.
-
---- CONTEXT START ---
+--- DOCUMENTED PORTFOLIO DATA (CONTEXT) ---
 ${contextText}
---- CONTEXT END ---
+--- END DATA ---
 
 User Question: ${userQuestion}
-Assistant Content:
+Assistant Response:
 `.trim();
 
     return finalPrompt;

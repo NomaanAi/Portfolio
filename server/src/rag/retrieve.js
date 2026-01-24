@@ -1,8 +1,13 @@
 import { getCollection } from './chromaClient.js';
 
-export const retrieveContext = async (query, nResults = 5) => {
+export const retrieveContext = async (query, nResults = 10) => {
     try {
         const collection = await getCollection();
+
+        if (!collection) {
+            console.log("RAG Retrieval skipped (Chroma not configured).");
+            return [];
+        }
 
         // Query using text directly (Chroma Cloud embeds it automatically)
         const results = await collection.query({

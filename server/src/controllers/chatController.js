@@ -20,7 +20,7 @@ export const handleChat = async (req, res) => {
         }
 
         // 2. RAG Retrieval
-        const retrievedDocs = await retrieveContext(message, 5); // Get top 5
+        const retrievedDocs = await retrieveContext(message, 10); // Get top 10
 
         // 3. Construct Prompt with RAG
         const finalPrompt = await buildPrompt(message, retrievedDocs);
@@ -35,11 +35,7 @@ export const handleChat = async (req, res) => {
             body: JSON.stringify({
                 model: settings.model,
                 messages: [
-                    { role: "system", content: "You are a helpful assistant." }, // System prompt is embedded in finalPrompt content now, or we can use role: user for the big block.
-                    // The buildPrompt returns a big string containing system instructions + context + user question.
-                    // Ideally, we should put this in 'user' role or split it. 
-                    // However, many OpenRouter models handle a large prompt in 'user' fine.
-                    // Strategy: Use a minimal system prompt and put the whole RAG block in the last user message.
+                    { role: "system", content: "You are a strict portfolio documentation assistant. Follow the user's provided context rules exactly." },
                     { role: "user", content: finalPrompt }
                 ]
             })

@@ -60,26 +60,25 @@ app.use(
       const allowedOrigins = [
         process.env.CLIENT_ORIGIN,
         process.env.CLIENT_URL,
-        process.env.VITE_API_URL, // Legacy support
-        // Localhost allowed for development - STRICTLY remove/guard in production if needed, 
-        // but often useful for local testing against prod backend if carefully managed.
+        process.env.VITE_API_URL,
         'http://localhost:5173',
-        'http://localhost:3000',
-        'http://127.0.0.1:5173'
+        'http://localhost:3000'
       ];
 
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
       // Check if origin is allowed
-      const isAllowed = allowedOrigins.some(o => o && (o === origin || o.replace(/\/$/, '') === origin));
+      // 1. Exact match in allowedOrigins
+      // 2. Ends with .vercel.app (for all preview deployments)
+      const isAllowed = allowedOrigins.some(o => o && (o === origin || o.replace(/\/$/, '') === origin)) ||
+        origin.endsWith('.vercel.app');
 
       if (isAllowed || process.env.NODE_ENV === 'development') {
         callback(null, true);
       } else {
-        console.warn(`[CORS] Blocked request from origin: ${origin}. Add this URL to CLIENT_ORIGIN in your backend environment variables.`);
-        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-        callback(new Error(msg), false);
+        console.warn(`[CORS] Blocked request from origin: ${origin}.`);
+        callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
       }
     },
     credentials: true,

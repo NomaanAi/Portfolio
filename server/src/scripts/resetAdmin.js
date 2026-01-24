@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
-import User from '../models/userModel.js';
+import Admin from '../models/Admin.js';
 import { connectDB } from '../config/db.js';
 
 dotenv.config({ path: '.env' });
@@ -15,22 +15,20 @@ const resetAdmin = async () => {
         const email = 'noman.dev@admin';
         const password = 'noman.admin';
 
-        let user = await User.findOne({ email });
+        let admin = await Admin.findOne({ email });
 
-        if (!user) {
-            console.log('User not found. Creating...');
-            const hashedPassword = await bcrypt.hash(password, 12);
-            user = await User.create({
-                name: 'System Admin',
+        if (!admin) {
+            console.log('Admin not found. Creating...');
+            admin = await Admin.create({
                 email,
-                password: hashedPassword,
+                password, // Model pre-save hook handles hashing
                 role: 'admin'
             });
         } else {
-            console.log('User found. Updating password...');
-            user.password = await bcrypt.hash(password, 12);
-            user.role = 'admin';
-            await user.save();
+            console.log('Admin found. Updating password...');
+            admin.password = password; // Marks as modified
+            admin.role = 'admin';
+            await admin.save(); // Model pre-save hook handles hashing
         }
 
         console.log(`SUCCESS: Admin reset. Email: ${email}, Password: ${password}`);
