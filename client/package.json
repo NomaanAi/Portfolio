@@ -26,6 +26,8 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@types/node": "^25.0.10",
+    "@types/react": "^19.2.9",
     "autoprefixer": "^10.4.19",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
