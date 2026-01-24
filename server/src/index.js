@@ -171,6 +171,10 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+import { checkRAGHealth } from './rag/chromaClient.js';
+
+// ... (previous code)
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
@@ -183,6 +187,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/health/rag', async (req, res) => {
+  const isHealthy = await checkRAGHealth();
+  if (isHealthy) {
+    res.status(200).json({ status: 'ok', message: 'RAG Embeddings Opeational' });
+  } else {
+    res.status(500).json({ status: 'error', message: 'RAG/Embeddings Failed' });
+  }
+});
+
 // Handle 404 - Route not found
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
@@ -191,10 +204,27 @@ app.all('*', (req, res, next) => {
 // Global error handling middleware
 app.use(globalErrorHandler);
 
+let server;
+
 // Start server
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+  // 1. Check RAG Health (Critical for Production)
+  if (process.env.NODE_ENV === 'production' || process.env.STRICT_RAG_MODE) {
+    console.log("🔍 Verifying RAG Embeddings...");
+    const ragHealthy = await checkRAGHealth();
+    if (!ragHealthy) {
+      console.error("❌ STARTUP ABORTED: RAG Embeddings failed to initialize.");
+      process.exit(1);
+    }
+    console.log("✅ RAG Embeddings Verified.");
+  }
+
+  server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {

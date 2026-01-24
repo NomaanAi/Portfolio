@@ -33,12 +33,35 @@ export const getCollection = async () => {
     const client = getClient();
     if (!client) return null;
 
+    // STRICT PRODUCTION CHECK: Fail fast if embeddings or connection are broken.
+    // The user requirement is 'If initialization fails: crash the server immediately'.
+    // We do not want silent failures in production.
     try {
         return await client.getOrCreateCollection({
             name: "portfolio-rag"
         });
     } catch (error) {
-        console.warn("⚠️ Chroma Collection Error (likely missing embeddings):", error.message);
-        return null; // Graceful degradation
+        console.error("❌ CRITICAL RAG FAILURE: Could not initialize Chroma Collection.");
+        console.error("Error details:", error);
+        console.error("This usually means @chroma-core/default-embed is missing or incompatible.");
+
+        // Force crash in production to avoid silent zombie state
+        if (process.env.NODE_ENV === 'production') {
+            console.error("💥 Crashing server to force attention to RAG dependency failure.");
+            process.exit(1);
+        }
+        throw error;
+    }
+};
+
+export const checkRAGHealth = async () => {
+    try {
+        const col = await getCollection();
+        if (!col) return false;
+        // Verify we can count (read access)
+        await col.count();
+        return true;
+    } catch (e) {
+        return false;
     }
 };
