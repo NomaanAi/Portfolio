@@ -21,7 +21,7 @@ export const buildPrompt = async (userQuestion, contextDocs) => {
 
 
     // Explicitly handle empty context to prevent hallucination
-    const contextText = contextDocs.length > 0 ? contextDocs.join('\n\n') : "NO DATA FOUND. The user's query returned no results from the portfolio database.";
+    const contextText = contextDocs.length > 0 ? contextDocs.join('\n\n') : "NO DATA FOUND. That information is not documented in the current portfolio.";
 
     // console.log("System Prompt Loaded:", systemPrompt.length > 50);
 
