@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
-import { Save, Eye } from "lucide-react";
+import { Save, Eye, Plus, Trash2 } from "lucide-react";
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [heroTitle, setHeroTitle] = useState("");
   const [heroSubtitle, setHeroSubtitle] = useState("");
+  const [principles, setPrinciples] = useState<{p: string, d: string}[]>([]);
   
   useEffect(() => {
     const fetchSettings = async () => {
@@ -16,7 +17,10 @@ export default function SettingsPage() {
          const res = await api.get("/settings");
          const settings = res.data.data?.settings || res.data.data || {};
          
-         if (settings.about) setContent(settings.about.text || "");
+         if (settings.about) {
+             setContent(settings.about.text || "");
+             setPrinciples(settings.about.principles || []);
+         }
          if (settings.hero) {
              setHeroTitle(settings.hero.title || "");
              setHeroSubtitle(settings.hero.subtitle || "");
@@ -33,7 +37,10 @@ export default function SettingsPage() {
   const handleSave = async () => {
     try {
         await api.patch("/settings", {
-            about: { text: content },
+            about: { 
+                text: content,
+                principles: principles 
+            },
             hero: { title: heroTitle, subtitle: heroSubtitle }
         });
         alert("Settings saved successfully!");
@@ -42,6 +49,14 @@ export default function SettingsPage() {
         alert("Failed to save settings");
     }
   };
+
+  const addPrinciple = () => setPrinciples([...principles, { p: "", d: "" }]);
+  const updatePrinciple = (index: number, field: 'p'|'d', value: string) => {
+      const updated = [...principles];
+      updated[index][field] = value;
+      setPrinciples(updated);
+  };
+  const removePrinciple = (index: number) => setPrinciples(principles.filter((_, i) => i !== index));
 
   if (loading) return <div className="p-8 text-center text-muted-foreground animate-pulse">Loading System Configuration...</div>;
 
@@ -74,7 +89,7 @@ export default function SettingsPage() {
                             className="w-full bg-background border border-border p-4 rounded-lg focus:ring-2 focus:ring-primary/50 outline-none transition-all font-heading font-bold text-lg" 
                             value={heroTitle} 
                             onChange={e => setHeroTitle(e.target.value)}
-                            placeholder="e.g. AI & Full Stack Engineer"
+                            placeholder="e.g. System Architecture & ML Implementation"
                         />
                     </div>
                     <div className="space-y-2">
@@ -83,29 +98,62 @@ export default function SettingsPage() {
                             className="w-full bg-background border border-border p-4 rounded-lg focus:ring-2 focus:ring-primary/50 outline-none transition-all font-mono text-sm" 
                             value={heroSubtitle} 
                             onChange={e => setHeroSubtitle(e.target.value)}
-                            placeholder="e.g. Building intelligent systems..."
+                            placeholder="e.g. Focused on high-availability backend development and data processing pipelines."
                         />
                     </div>
                 </div>
             </div>
 
             {/* About Editor */}
-            <div className="bg-card border border-border/60 p-8 rounded-xl space-y-6 shadow-sm">
+            <div className="bg-card border border-border/60 p-8 rounded-xl space-y-8 shadow-sm">
                  <div className="flex items-center gap-3 border-b border-border/50 pb-4">
                     <div className="bg-blue-500/10 p-2 rounded-lg text-blue-500"><Eye className="w-5 h-5" /></div>
                     <h2 className="text-xl font-bold">About Section</h2>
                 </div>
-                <div className="space-y-2">
+                
+                <div className="space-y-4">
                     <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Biography</label>
                     <textarea 
-                        className="w-full min-h-[400px] bg-background border border-border p-4 rounded-lg focus:ring-2 focus:ring-primary/50 outline-none transition-all font-mono text-sm leading-relaxed resize-y" 
+                        className="w-full min-h-[300px] bg-background border border-border p-4 rounded-lg focus:ring-2 focus:ring-primary/50 outline-none transition-all font-mono text-sm leading-relaxed resize-y" 
                         value={content} 
                         onChange={e => setContent(e.target.value)}
                         placeholder="Write your bio here..."
                     />
-                    <div className="flex justify-between text-xs text-muted-foreground pt-2">
-                        <span>Supports basic spacing. Rendering is controlled by CSS.</span>
-                        <span>{content.length} characters</span>
+                </div>
+
+                <div className="space-y-6 pt-4 border-t border-border/50">
+                    <div className="flex justify-between items-center">
+                        <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Operating Principles</label>
+                        <button onClick={addPrinciple} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                            <Plus className="w-3 h-3" /> Add Principle
+                        </button>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        {principles.map((pr, i) => (
+                            <div key={i} className="p-4 border border-border/50 rounded-lg bg-background/50 relative group">
+                                <button 
+                                    onClick={() => removePrinciple(i)}
+                                    className="absolute -top-2 -right-2 p-1.5 bg-background border border-border rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500"
+                                >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                                <div className="space-y-4">
+                                    <input 
+                                        className="w-full bg-transparent border-b border-border/50 pb-2 focus:border-primary outline-none transition-colors font-bold text-sm"
+                                        value={pr.p}
+                                        onChange={e => updatePrinciple(i, 'p', e.target.value)}
+                                        placeholder="Principle Title (e.g. Reliability Over Novelty)"
+                                    />
+                                    <textarea 
+                                        className="w-full bg-transparent text-xs text-muted-foreground leading-relaxed outline-none min-h-[60px] resize-none"
+                                        value={pr.d}
+                                        onChange={e => updatePrinciple(i, 'd', e.target.value)}
+                                        placeholder="Description (e.g. Prioritizing stable, proven architectures...)"
+                                    />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

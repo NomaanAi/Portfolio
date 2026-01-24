@@ -5,8 +5,10 @@ const skillSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
-        enum: ["AI/ML", "Backend", "Frontend", "DevOps", "Languages", "Tools", "Design", "Soft Skills", "Other"]
+        enum: ["Machine Learning & Data Reasoning", "Systems / Backend Thinking", "Engineering Judgment", "Languages", "Tools", "Other"]
     },
+    description: { type: String },
+    defendedBy: { type: String }, // Project title or ID
     order: { type: Number, default: 0 }
 }, { timestamps: true });
 

@@ -18,8 +18,16 @@ const getBaseUrl = () => {
     }
   }
 
+  if (url && url.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
+
   if (url && !url.endsWith('/api')) {
     url = `${url}/api`;
+  }
+  
+  if (url && !url.endsWith('/')) {
+    url = `${url}/`;
   }
   
   return url;
@@ -28,18 +36,23 @@ const getBaseUrl = () => {
 const API_URL = getBaseUrl();
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_URL.endsWith('/') ? API_URL : `${API_URL}/`,
   headers: {
     "Content-Type": "application/json",
   },
   withCredentials: true,
 });
 
-// Request Interceptor: Attach JWT if available
+// Bulletproof URL joining: remove leading slash from request URL 
+// to ensure it appends to baseURL (/api/) instead of joining from root
 api.interceptors.request.use(
   (config) => {
+    if (config.url && config.url.startsWith('/')) {
+        config.url = config.url.substring(1);
+    }
+
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("admin_token");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

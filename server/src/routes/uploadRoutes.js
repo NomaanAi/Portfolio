@@ -1,13 +1,13 @@
 import express from 'express';
 import { uploadSingleImage } from '../middleware/upload.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // @desc    Upload single image
 // @route   POST /api/upload
 // @access  Admin
-router.post('/', requireAuth, requireAdmin, uploadSingleImage('image'), (req, res) => {
+router.post('/', protect, uploadSingleImage('image'), (req, res) => {
     // uploadSingleImage middleware handles uploading to Cloudinary
     // and puts the URL in req.body.image (because fieldName is 'image')
 

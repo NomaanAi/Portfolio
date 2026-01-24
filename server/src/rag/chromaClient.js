@@ -1,4 +1,8 @@
 import { CloudClient } from "chromadb";
+import v8 from "v8";
+
+// Try to increase memory limit if possible (though this might not work mid-execution)
+v8.setFlagsFromString('--max-old-space-size=4096');
 
 let instance = null;
 

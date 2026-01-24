@@ -2,29 +2,30 @@ import express from 'express';
 import { handleChat, getKnowledge, createKnowledge, updateKnowledge, deleteKnowledge } from '../controllers/chatController.js';
 import ChatbotSettings from '../models/ChatbotSettings.js';
 import ChatLog from '../models/ChatLog.js';
-import { protect, restrictTo } from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 import { ragService } from '../services/ragService.js';
 import path from 'path';
 
 const router = express.Router();
 
-// Protected Chat Route
-// Changed from /message to / to match app.use('/api/chat') mount point
+// Public Chat Route
 router.post('/', handleChat);
+
+// PROTECT ALL ROUTES BELOW
+router.use(protect);
 
 // Knowledge Base Management (Admin Only)
 router.route('/knowledge')
-    .get(protect, restrictTo('admin'), getKnowledge)
-    .post(protect, restrictTo('admin'), createKnowledge);
+    .get(getKnowledge)
+    .post(createKnowledge);
 
 router.route('/knowledge/:id')
-    .put(protect, restrictTo('admin'), updateKnowledge)
-    .delete(protect, restrictTo('admin'), deleteKnowledge);
+    .put(updateKnowledge)
+    .delete(deleteKnowledge);
 
 // Admin Route to Ingest Knowledge
-router.post('/ingest', protect, restrictTo('admin'), async (req, res) => {
+router.post('/ingest', async (req, res) => {
     try {
-        // Hardcoded path to system prompt for now
         const filePath = path.join(process.cwd(), '../CHATBOT_SYSTEM_PROMPT.md');
         const result = await ragService.ingestSystemPrompt(filePath);
         res.status(200).json({ status: 'success', data: result });
@@ -33,8 +34,7 @@ router.post('/ingest', protect, restrictTo('admin'), async (req, res) => {
     }
 });
 
-// Admin Routes (Protect these with authMiddleware in production)
-router.get('/settings', protect, restrictTo('admin'), async (req, res) => {
+router.get('/settings', async (req, res) => {
     try {
         const settings = await ChatbotSettings.getSettings();
         res.status(200).json({ status: 'success', data: { settings } });
@@ -43,7 +43,7 @@ router.get('/settings', protect, restrictTo('admin'), async (req, res) => {
     }
 });
 
-router.patch('/settings', protect, restrictTo('admin'), async (req, res) => {
+router.patch('/settings', async (req, res) => {
     try {
         const settings = await ChatbotSettings.findOneAndUpdate({}, req.body, { new: true, upsert: true });
         res.status(200).json({ status: 'success', data: { settings } });
@@ -52,7 +52,7 @@ router.patch('/settings', protect, restrictTo('admin'), async (req, res) => {
     }
 });
 
-router.get('/history', protect, restrictTo('admin'), async (req, res) => {
+router.get('/history', async (req, res) => {
     try {
         const logs = await ChatLog.find().sort({ createdAt: -1 }).limit(50);
         res.status(200).json({ status: 'success', data: { logs } });

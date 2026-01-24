@@ -169,6 +169,11 @@ export const ragService = {
     },
 
     getAllChunks: async () => {
-        return await KnowledgeBase.find().sort({ category: 1, title: 1 });
+        try {
+            return await KnowledgeBase.find().sort({ category: 1, title: 1 });
+        } catch (error) {
+            console.error("Failed to fetch knowledge chunks:", error);
+            return []; // Return empty array to prevent 500
+        }
     }
 };

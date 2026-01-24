@@ -7,6 +7,9 @@ const siteSettingsSchema = new mongoose.Schema({
     },
     about: {
         text: { type: String, default: "I am a passionate developer..." },
+        principles: [
+            { p: { type: String }, d: { type: String } }
+        ]
     },
     sections: {
         projects: { type: Boolean, default: true },

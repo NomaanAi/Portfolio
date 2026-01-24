@@ -24,8 +24,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Noman.Dev | AI & Full Stack", // Updated Title
-  description: "Building the future of AI & Web.",
+  title: "Noman.Dev | Software Systems & Documentation", 
+  description: "A portfolio of software systems with a focus on technical trade-offs.",
 };
 
 export default function RootLayout({

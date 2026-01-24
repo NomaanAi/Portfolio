@@ -2,67 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Default Dark Theme */
-  --bg: #0B0C0E;
-  --text: #EDECEC;
-  --muted: #A1A1AA;
-  --accent: #5E6AD2;
-  
-  --surface: rgba(255, 255, 255, 0.04);
-  --border: rgba(255, 255, 255, 0.08);
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.75rem;
+  }
 
-  /* Legacy mappings for safety */
-  --color-background: var(--bg);
-  --color-foreground: var(--text);
-  --color-accent: var(--accent);
-  --color-surface: var(--surface);
-  --color-border: var(--border);
+  [data-theme='dark'] {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 250 50% 60%; /* Custom Indigo Accent */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
 
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
-}
-
-[data-theme='light'] {
-  --bg: #FAFAFA;
-  --text: #18181B;
-  --muted: #71717A;
-  --accent: #4F46E5; /* Slightly darker indigo for contrast */
-  
-  --surface: rgba(0, 0, 0, 0.04);
-  --border: rgba(0, 0, 0, 0.08);
-  
-  /* Update legacy mappings */
-  --color-background: var(--bg);
-  --color-foreground: var(--text);
-  --color-accent: var(--accent);
-  --color-surface: var(--surface);
-  --color-border: var(--border);
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  transition: background max(0.2s) ease, color max(0.2s) ease;
+    /* Legacy Mappings for safety */
+    --bg: #0B0C0E;
+    --text: #EDECEC;
+    --muted-legacy: #A1A1AA;
+    --surface: rgba(255, 255, 255, 0.04);
+  }
 }
 
-/* Linear-style utilities */
-.container-max {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/10 selection:text-primary;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 3px;
-}
+.container-wide { @apply max-w-7xl mx-auto px-6; }
+.container-max { @apply max-w-6xl mx-auto px-6; }
+
+.font-heading { font-family: var(--font-space-grotesk), system-ui, sans-serif; }
+.font-mono { font-family: var(--font-jetbrains-mono), monospace; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors; }
+

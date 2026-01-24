@@ -9,6 +9,7 @@ const projectSchema = new mongoose.Schema({
   solution: { type: String },
   architecture: { type: String },
   outcome: { type: String },
+  learnings: { type: String }, // What broke / improvements
   stack: [{ type: String }],
   liveUrl: { type: String },
   githubUrl: { type: String },

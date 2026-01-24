@@ -14,7 +14,6 @@ import compression from 'compression';
 import { connectDB } from './config/db.js';
 import globalErrorHandler from './controllers/errorController.js';
 import AppError from './utils/appError.js';
-import seedAdmin from './utils/seedAdmin.js';
 
 // Import routes
 import authRouter from './routes/authRoutes.js';
@@ -40,28 +39,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Connect to MongoDB
-connectDB().then(async () => {
-  seedAdmin();
-  // Ingest RAG data on startup
-  try {
-    const { ingestData } = await import('./rag/ingest.js');
-    await ingestData();
-  } catch (err) {
-    console.error("RAG Ingestion Error:", err);
-  }
-});
+connectDB();
 
 // 1) GLOBAL MIDDLEWARES
 
 // Set security HTTP headers
 app.use(helmet());
 
-// Cross-Origin-Opener-Policy for Google OAuth Popups
-app.use((req, res, next) => {
-  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
-  next();
-});
+// Cross-Origin-Opener-Policy for Google OAuth Popups - REMOVED
+// app.use((req, res, next) => {
+//   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+//   res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+//   next();
+// });
 
 // Enable CORS
 app.use(
@@ -228,3 +218,5 @@ process.on('uncaughtException', (err) => {
 });
 
 export default app;
+// Restart trigger
+// Restart trigger 2

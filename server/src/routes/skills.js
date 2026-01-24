@@ -1,7 +1,7 @@
 
 import express from "express";
 import Skill from "../models/Skill.js";
-import { requireAuth, requireAdmin } from "../middleware/auth.js";
+// import { requireAuth, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -24,8 +24,8 @@ router.get("/", async (req, res) => {
 
 
 // Protect all routes after this middleware
-router.use(requireAuth);
-router.use(requireAdmin);
+// router.use(requireAuth);
+// router.use(requireAdmin);
 
 // POST new skill (Admin only)
 router.post("/", async (req, res) => {

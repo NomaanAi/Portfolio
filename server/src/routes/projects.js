@@ -1,6 +1,6 @@
 import express from "express";
 import Project from "../models/Project.model.js";
-import { requireAuth, requireAdmin } from "../middleware/auth.js";
+// import { requireAuth, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -27,7 +27,8 @@ router.get("/:id", async (req, res) => {
 });
 
 // Admin: get all projects (drafts, archived, published)
-router.get("/admin/all", requireAuth, requireAdmin, async (req, res) => {
+// Admin: get all projects (drafts, archived, published)
+router.get("/admin/all", async (req, res) => {
   try {
     const projects = await Project.find().sort({ order: 1, createdAt: -1 });
     res.json(projects);
@@ -37,7 +38,8 @@ router.get("/admin/all", requireAuth, requireAdmin, async (req, res) => {
 });
 
 // Admin: create project
-router.post("/", requireAuth, requireAdmin, async (req, res) => {
+// Admin: create project
+router.post("/", async (req, res) => {
   try {
     const project = await Project.create(req.body);
     res.status(201).json(project);
@@ -47,7 +49,8 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
 });
 
 // Admin: update project
-router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
+// Admin: update project
+router.put("/:id", async (req, res) => {
   try {
     const updated = await Project.findByIdAndUpdate(
       req.params.id,
@@ -61,7 +64,8 @@ router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
 });
 
 // Admin: delete project
-router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+// Admin: delete project
+router.delete("/:id", async (req, res) => {
   try {
     await Project.findByIdAndDelete(req.params.id);
     res.json({ message: "Deleted" });

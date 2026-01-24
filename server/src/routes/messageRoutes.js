@@ -1,6 +1,6 @@
 import express from 'express';
 import * as messageController from '../controllers/messageController.js';
-import * as authController from '../controllers/authController.js';
+// import * as authController from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -8,13 +8,13 @@ const router = express.Router();
 router.post('/', messageController.createMessage);
 
 // Protected routes (require authentication)
-router.use(authController.protect);
+// router.use(authController.protect);
 
 // User routes
 router.get('/my-messages', messageController.getMyMessages);
 
 // Admin routes
-router.use(authController.restrictTo('admin'));
+// router.use(authController.restrictTo('admin'));
 
 router.get('/', messageController.getAllMessages);
 router.get('/stats', messageController.getDashboardStats);

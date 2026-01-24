@@ -13,10 +13,19 @@ interface Skill {
   _id: string;
   name: string;
   category: string;
+  description: string;
+  defendedBy: string;
   order: number;
 }
 
-const CATEGORIES = ["Frontend", "Backend", "Languages", "Tools", "Design", "DevOps", "AI/ML", "Soft Skills", "Other"];
+const CATEGORIES = [
+  "Machine Learning & Data Reasoning", 
+  "Systems / Backend Thinking", 
+  "Engineering Judgment", 
+  "Languages", 
+  "Tools", 
+  "Other"
+];
 
 export default function SkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -82,7 +91,7 @@ export default function SkillsPage() {
   const handleCreate = () => {
     setIsCreating(true);
     setIsEditing(null);
-    setFormData({ category: "Other", order: 0 }); // Defaults
+    setFormData({ category: CATEGORIES[0], order: 0 }); // Defaults
   };
 
   const handleCancel = () => {
@@ -95,22 +104,22 @@ export default function SkillsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Skills Manager</h1>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Skills Manager</h1>
+      <div className="flex justify-between items-center bg-card border border-border/50 p-6 rounded-xl">
+        <div>
+            <h1 className="text-2xl font-bold font-heading">Capability Manager</h1>
+            <p className="text-xs text-muted-foreground mt-1 uppercase tracking-widest font-mono">Archive Integrity Maintenance</p>
+        </div>
         <CommonButton 
            onClick={handleCreate}
            className="gap-2"
         >
-            <Plus className="w-4 h-4" /> Add Skill
+            <Plus className="w-4 h-4" /> Add Capability
         </CommonButton>
-      </div>
       </div>
 
       {isCreating && (
-         <div className="border border-border p-4 rounded-lg bg-muted/30 mb-6">
-            <h3 className="font-semibold mb-3">Add New Skill</h3>
+         <div className="border border-primary/20 p-8 rounded-xl bg-primary/5 mb-8 shadow-inner">
+            <h3 className="text-sm font-bold uppercase tracking-widest mb-6 text-primary">New Capability Entry</h3>
             <SkillForm 
                 data={formData} 
                 onChange={(d) => setFormData({...formData, ...d})} 
@@ -120,9 +129,9 @@ export default function SkillsPage() {
          </div>
       )}
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {skills.map((skill) => (
-          <div key={skill._id} className="bg-card border border-border/50 p-4 rounded-lg flex items-center justify-between group hover:border-border transition-colors">
+          <div key={skill._id} className="bg-card border border-border/40 p-6 rounded-xl group hover:border-primary/30 transition-all hover:shadow-lg">
              {isEditing === skill._id ? (
                  <SkillForm 
                     data={formData} 
@@ -131,34 +140,39 @@ export default function SkillsPage() {
                     onCancel={handleCancel} 
                  />
              ) : (
-                 <>
-                    <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-xs font-mono opacity-50">
-                            {skill.order}
+                 <div className="flex flex-col gap-4">
+                    <div className="flex items-start justify-between">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-mono font-bold text-primary uppercase tracking-[0.2em] mb-1">[{skill.category}]</span>
+                            <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{skill.name}</h3>
                         </div>
-                        <div>
-                            <h3 className="font-bold">{skill.name}</h3>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
-                                {skill.category}
-                            </span>
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <CommonButton variant="ghost" size="icon" onClick={() => handleEdit(skill)} className="text-blue-400 hover:bg-blue-400/10">
+                                 <Edit2 className="w-4 h-4" />
+                            </CommonButton>
+                            <CommonButton variant="ghost" size="icon" onClick={() => handleDelete(skill._id)} className="text-red-400 hover:bg-red-400/10">
+                                 <Trash2 className="w-4 h-4" />
+                            </CommonButton>
                         </div>
                     </div>
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <CommonButton variant="ghost" size="icon" onClick={() => handleEdit(skill)} className="text-blue-400 hover:bg-secondary">
-                             <Edit2 className="w-4 h-4" />
-                        </CommonButton>
-                        <CommonButton variant="ghost" size="icon" onClick={() => handleDelete(skill._id)} className="text-red-400 hover:bg-secondary">
-                             <Trash2 className="w-4 h-4" />
-                        </CommonButton>
+                    {skill.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl italic">&quot;{skill.description}&quot;</p>
+                    )}
+                    <div className="flex items-center justify-between border-t border-border/40 pt-4">
+                        <div className="text-[10px] font-mono text-muted-foreground uppercase flex items-center gap-2">
+                             <div className="w-1 h-1 rounded-full bg-primary" />
+                             Defended by: <span className="text-foreground font-bold">{skill.defendedBy || 'N/A'}</span>
+                        </div>
+                        <div className="text-[10px] font-mono text-muted-foreground opacity-30">ORD_{skill.order}</div>
                     </div>
-                 </>
+                 </div>
              )}
           </div>
         ))}
 
         {skills.length === 0 && !isCreating && (
-          <div className="text-center py-10 text-muted-foreground">
-            No skills found. Add one to get started.
+          <div className="text-center py-20 bg-secondary/10 rounded-xl border border-dashed border-border text-muted-foreground font-mono text-sm uppercase tracking-widest">
+            Log is empty. Initialize capability entries.
           </div>
         )}
       </div>
@@ -173,42 +187,70 @@ function SkillForm({ data, onChange, onSave, onCancel }: {
     onCancel: () => void 
 }) {
     return (
-        <div className="flex flex-wrap gap-4 items-end w-full">
-            <div className="flex-1 min-w-[200px]">
-                <CommonLabel className="block text-xs mb-1 text-muted-foreground font-medium uppercase tracking-wider">Name</CommonLabel>
-                <CommonInput 
-                    value={data.name || ""}
-                    onChange={e => onChange({ name: e.target.value })}
-                    placeholder="e.g. React"
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                    <CommonLabel className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Entry Label (Name)</CommonLabel>
+                    <CommonInput 
+                        value={data.name || ""}
+                        onChange={e => onChange({ name: e.target.value })}
+                        placeholder="e.g. Model Evaluation Strategy"
+                        className="font-bold text-lg"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <CommonLabel className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">System Category</CommonLabel>
+                    <CommonSelect 
+                        value={data.category || CATEGORIES[0]}
+                        onChange={e => onChange({ category: e.target.value })}
+                        className="font-mono text-xs font-bold"
+                    >
+                        {CATEGORIES.map(c => (
+                            <option key={c} value={c} className="bg-background text-foreground uppercase">
+                                {c}
+                            </option>
+                        ))}
+                    </CommonSelect>
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <CommonLabel className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Capability Definition (Description)</CommonLabel>
+                <textarea 
+                    className="w-full bg-background border border-border p-4 rounded-xl focus:ring-2 focus:ring-primary/50 outline-none transition-all text-sm leading-relaxed min-h-[100px]"
+                    value={data.description || ""}
+                    onChange={e => onChange({ description: e.target.value })}
+                    placeholder="Describe how this capability is applied in engineering contexts..."
                 />
             </div>
-            <div className="w-[150px]">
-                <CommonLabel className="block text-xs mb-1 opacity-70">Category</CommonLabel>
-                <CommonSelect 
-                    value={data.category || CATEGORIES[0]}
-                    onChange={e => onChange({ category: e.target.value })}
-                >
-                    {CATEGORIES.map(c => (
-                        <option key={c} value={c} className="bg-background text-foreground hover:bg-secondary">
-                            {c}
-                        </option>
-                    ))}
-                </CommonSelect>
+
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_100px] gap-8">
+                 <div className="space-y-2">
+                    <CommonLabel className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Verification Key (Defended By)</CommonLabel>
+                    <CommonInput 
+                        value={data.defendedBy || ""}
+                        onChange={e => onChange({ defendedBy: e.target.value })}
+                        placeholder="e.g. System Documentation Archive Entry #4"
+                        className="font-mono text-xs uppercase"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <CommonLabel className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Logic Order</CommonLabel>
+                    <CommonInput 
+                        type="number"
+                        value={data.order || 0}
+                        onChange={e => onChange({ order: parseInt(e.target.value) })}
+                        className="text-center font-bold"
+                    />
+                </div>
             </div>
-            <div className="w-[80px]">
-                <CommonLabel className="block text-xs mb-1 opacity-70">Order</CommonLabel>
-                <CommonInput 
-                    type="number"
-                    value={data.order || 0}
-                    onChange={e => onChange({ order: parseInt(e.target.value) })}
-                />
-            </div>
-            <div className="flex gap-2 pb-0.5">
-                <CommonButton onClick={onSave} size="icon" className="bg-green-600 hover:bg-green-700">
-                    <Check className="w-4 h-4" />
+
+            <div className="flex gap-4 pt-4 border-t border-border/50">
+                <CommonButton onClick={onSave} className="flex-1 font-bold h-12">
+                    <Check className="w-5 h-5 mr-2" /> Commit Entry
                 </CommonButton>
-                <CommonButton onClick={onCancel} variant="secondary" size="icon">
-                    <X className="w-4 h-4" />
+                <CommonButton onClick={onCancel} variant="secondary" className="px-8 font-bold h-12">
+                    <X className="w-5 h-5 mr-2" /> Abort
                 </CommonButton>
             </div>
         </div>

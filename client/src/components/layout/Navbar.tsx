@@ -4,9 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/theme/ThemeToggle";
-import { Menu, X, User as UserIcon, LogOut, Github, Linkedin } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
 
 
 const links = [
@@ -20,173 +19,76 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <nav className="fixed top-0 w-full border-b border-border bg-background z-50">
-      <div className="container-wide flex h-16 items-center justify-between">
-        <Link href="/" className="font-heading font-bold text-xl tracking-tighter hover:opacity-80 transition">
-          Noman.Dev
-        </Link>
-        
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-            <div className="flex gap-1">
-                {links.map((link) => (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        className={cn(
-                            "px-3 py-1.5 text-sm font-medium transition-all duration-150 ease-out rounded-[4px] active:scale-[0.97] active:duration-100",
-                            pathname === link.href 
-                              ? "text-foreground" 
-                              : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
-                        )}
-                    >
-                        {link.label}
-                    </Link>
-                ))}
-            </div>
-
-            {/* Social Links (Always Visible) */}
-            <div className="flex items-center gap-4 border-l border-border/50 pl-6 pr-6">
-                 <a href="https://github.com/NomaanAi" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Github className="w-5 h-5" />
-                 </a>
-                 <a href="https://www.linkedin.com/in/nomaanai/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Linkedin className="w-5 h-5" />
-                 </a>
-            </div>
-
-            {/* Auth Buttons & Theme Toggle */}
-            <div className="flex items-center gap-4 border-l border-border/50 pl-6">
-                {!user ? (
-                    <>
-                        <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                            Login
-                        </Link>
-                        <Link href="/register" className="px-4 py-2 bg-foreground text-background text-sm font-bold rounded-full hover:opacity-90 active:scale-[0.97] transition-all duration-150 ease-out active:duration-100">
-                            Register
-                        </Link>
-                    </>
-                ) : (
-                    <div className="relative">
-                        <button 
-                            onClick={() => setShowUserMenu(!showUserMenu)}
-                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                        >
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-xs font-bold">
-                                {user.name?.charAt(0).toUpperCase()}
-                            </div>
-                        </button>
-                        
-                        {/* Simple User Dropdown */}
-                        {showUserMenu && (
-                            <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-xl shadow-xl overflow-hidden py-1">
-                                <div className="px-4 py-3 border-b border-border/50">
-                                    <p className="text-sm font-bold text-foreground truncate">{user?.name}</p>
-                                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                                </div>
-                                <button 
-                                    onClick={() => {
-                                        logout();
-                                        setShowUserMenu(false);
-                                    }}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-secondary/50 flex items-center gap-2 transition-colors"
-                                >
-                                    <LogOut className="w-4 h-4" />
-                                    Logout
-                                </button>
-                            </div>
-                        )}
-                        {/* Click outside listener */}
-                         {showUserMenu && (
-                            <div className="fixed inset-0 z-[-1]" onClick={() => setShowUserMenu(false)} />
-                         )}
-                    </div>
-                )}
-                
-                <ThemeToggle />
-            </div>
-        </div>
-
-        {/* Mobile Nav Toggle */}
-        <div className="flex items-center gap-4 md:hidden">
-             <ThemeToggle />
-             <button onClick={() => setIsOpen(!isOpen)} className="p-2">
-                 {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-             </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-          <div className="md:hidden border-t border-border/40 bg-background">
-              <div className="flex flex-col p-4 space-y-2">
+    <nav className="fixed top-0 w-full z-50 pt-4 px-4 md:px-6">
+      <div className="max-w-7xl mx-auto bg-background/80 backdrop-blur-md border border-border rounded-2xl shadow-sm transition-all duration-300">
+        <div className="container-wide flex h-16 items-center justify-between px-6">
+          <Link href="/" className="font-heading font-bold text-xl tracking-tighter hover:opacity-80 transition">
+            Noman.Dev
+          </Link>
+          
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
+              <div className="flex gap-1">
                   {links.map((link) => (
                       <Link
                           key={link.href}
                           href={link.href}
-                          onClick={() => setIsOpen(false)}
                           className={cn(
-                              "px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                              "relative px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg group",
                               pathname === link.href 
-                                ? "bg-primary text-primary-foreground" 
-                                : "hover:bg-secondary/50"
+                                ? "text-foreground" 
+                                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                           )}
                       >
                           {link.label}
+                          {pathname === link.href && (
+                              <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+                          )}
                       </Link>
                   ))}
-                  
-                  <div className="h-px bg-border/50 my-2" />
-                  
-                  {/* Social Links Mobile */}
-                  <div className="flex items-center gap-4 px-4 py-2">
-                       <a href="https://github.com/NomaanAi" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-secondary/50 rounded-full">
-                          <Github className="w-5 h-5" />
-                       </a>
-                       <a href="https://www.linkedin.com/in/nomaanai/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-secondary/50 rounded-full">
-                          <Linkedin className="w-5 h-5" />
-                       </a>
-                  </div>
+              </div>
 
-                  <div className="h-px bg-border/50 my-2" />
-
-                  
-                  {!user ? (
-                      <div className="flex flex-col gap-2">
-                        <Link
-                            href="/login"
-                            onClick={() => setIsOpen(false)}
-                            className="px-4 py-3 rounded-lg text-sm font-medium hover:bg-secondary/50 transition-colors"
-                        >
-                            Login
-                        </Link>
-                         <Link
-                            href="/register"
-                            onClick={() => setIsOpen(false)}
-                            className="px-4 py-3 rounded-lg text-sm font-bold bg-foreground text-background text-center transition-opacity hover:opacity-90"
-                        >
-                            Register
-                        </Link>
-                      </div>
-                  ) : (
-                      <button
-                          onClick={() => {
-                              logout();
-                              setIsOpen(false);
-                          }}
-                          className="px-4 py-3 rounded-lg text-sm font-medium text-red-500 hover:bg-red-500/10 text-left flex items-center gap-2 transition-colors"
-                      >
-                          <LogOut className="w-4 h-4" />
-                          Logout ({user?.name})
-                      </button>
-                  )}
+              {/* Theme Toggle */}
+              <div className="flex items-center pl-4 border-l border-border/50">
+                  <ThemeToggle />
               </div>
           </div>
-      )}
+
+          {/* Mobile Nav Toggle */}
+          <div className="flex items-center gap-2 md:hidden">
+               <ThemeToggle />
+               <button onClick={() => setIsOpen(!isOpen)} className="p-2 hover:bg-secondary rounded-lg transition-colors">
+                   {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+               </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isOpen && (
+            <div className="md:hidden border-t border-border/40 p-4 bg-background/95 rounded-b-2xl">
+                <div className="flex flex-col space-y-1">
+                    {links.map((link) => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setIsOpen(false)}
+                            className={cn(
+                                "px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                                pathname === link.href 
+                                  ? "bg-primary/10 text-primary" 
+                                  : "hover:bg-secondary"
+                            )}
+                        >
+                            {link.label}
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        )}
+      </div>
     </nav>
   );
 }
+
