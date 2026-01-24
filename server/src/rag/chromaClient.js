@@ -33,7 +33,12 @@ export const getCollection = async () => {
     const client = getClient();
     if (!client) return null;
 
-    return await client.getOrCreateCollection({
-        name: "portfolio-rag"
-    });
+    try {
+        return await client.getOrCreateCollection({
+            name: "portfolio-rag"
+        });
+    } catch (error) {
+        console.warn("⚠️ Chroma Collection Error (likely missing embeddings):", error.message);
+        return null; // Graceful degradation
+    }
 };
