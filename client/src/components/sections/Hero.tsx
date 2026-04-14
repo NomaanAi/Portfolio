@@ -28,15 +28,6 @@ export default function Hero() {
               This portfolio summarizes my approach to technical problem solving and system design.
             </p>
 
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 1 }}
-              className="mt-12 flex items-center gap-3 text-muted-foreground"
-            >
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-mono uppercase tracking-widest">Available for technical initiatives</span>
-            </motion.div>
           </motion.div>
         </div>
       </div>
